@@ -42,6 +42,8 @@ src/
     taskService.js      Business logic: validation, search, filter, sort
   repository/
     taskRepository.js   localStorage read/write, promise-based
+  models/
+    task.js             Task create, update, normalize, field limits
   utils/
     urgency.js          Pure urgency derivation from deadline + status
     date.js             ISO parsing and formatting, day boundaries
