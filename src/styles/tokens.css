@@ -1,0 +1,72 @@
+/* DeadlineRadar design tokens. Every value in the app comes from here. */
+
+/* Colors: neutral surfaces, one accent, muted urgency markers. All pairs meet WCAG AA. */
+:root {
+  --color-surface: #fafaf8;
+  --color-surface-raised: #ffffff;
+  --color-border: #d6d3cf;
+  --color-text: #1a1a18;
+  --color-text-muted: #57534e;
+  --color-accent: #0f766e;
+  --color-accent-contrast: #ffffff;
+  --color-danger: #b42318;
+  --color-urgency-overdue: #a33a2e;
+  --color-urgency-today: #92580a;
+}
+
+/* Spacing: 4px base scale. */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+}
+
+/* Type: system font stack, no web fonts. */
+:root {
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+}
+
+/* Shape */
+:root {
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --border-width: 1px;
+}
+
+/* Motion: short transitions only. */
+:root {
+  --duration-fast: 120ms;
+}
+
+/* The single allowed shadow, reserved for overlay surfaces such as the delete dialog. */
+:root {
+  --shadow-overlay: 0 8px 24px rgba(26, 26, 24, 0.12);
+}
+
+/* Neutralise transitions for users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

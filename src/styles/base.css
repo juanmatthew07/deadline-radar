@@ -1,0 +1,90 @@
+/* Global reset and element defaults. Values come from tokens.css only. */
+
+/* Minimal reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+}
+
+/* Single column, capped width, left aligned */
+#root {
+  max-width: 720px;
+  padding: var(--space-4);
+}
+
+h1,
+h2,
+h3 {
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+}
+
+h1 {
+  font-size: var(--text-xl);
+}
+
+h2 {
+  font-size: var(--text-lg);
+}
+
+h3 {
+  font-size: var(--text-base);
+}
+
+/* Visible focus on every interactive element */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Form controls and buttons: 44px touch target, 1px border, small radius */
+input,
+select,
+textarea,
+button {
+  font: inherit;
+  color: var(--color-text);
+  min-height: 44px;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-raised);
+}
+
+input,
+select,
+textarea {
+  padding: var(--space-2) var(--space-3);
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+}
+
+/* Accessibility utility: hide visually, keep for screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
