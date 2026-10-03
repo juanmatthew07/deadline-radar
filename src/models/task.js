@@ -47,8 +47,9 @@ export function createTask(draft, now = new Date()) {
     title: cleanText(source.title, TITLE_MAX_LENGTH),
     course: cleanText(source.course, COURSE_MAX_LENGTH),
     description: cleanText(source.description, DESCRIPTION_MAX_LENGTH),
-    // Kept exactly as given: the service owns deadline validation.
-    deadline: source.deadline,
+    // Kept exactly as given, and null when absent, so the shape is stable
+    // across a JSON round trip. The service owns deadline validation.
+    deadline: source.deadline ?? null,
     priority: pickAllowed(source.priority, TASK_PRIORITY, DEFAULT_PRIORITY),
     status: pickAllowed(source.status, TASK_STATUS, DEFAULT_STATUS),
     createdAt: stamp,
@@ -57,9 +58,22 @@ export function createTask(draft, now = new Date()) {
 }
 
 // Returns a new task and never mutates the given one. Only updatedAt moves.
+// The nine known fields are listed one by one, so a derived key such as
+// urgency on the input can never survive.
 export function updateTask(task, changes, now = new Date()) {
+  const base = isPlainObject(task) ? task : {}
   const patch = isPlainObject(changes) ? changes : {}
-  const next = { ...(isPlainObject(task) ? task : {}) }
+  const next = {
+    id: base.id,
+    title: base.title,
+    course: base.course,
+    description: base.description,
+    deadline: base.deadline,
+    priority: base.priority,
+    status: base.status,
+    createdAt: base.createdAt,
+    updatedAt: now.toISOString(),
+  }
   if ('title' in patch) next.title = cleanText(patch.title, TITLE_MAX_LENGTH)
   if ('course' in patch) next.course = cleanText(patch.course, COURSE_MAX_LENGTH)
   if ('description' in patch) {
@@ -72,7 +86,6 @@ export function updateTask(task, changes, now = new Date()) {
   if ('status' in patch) {
     next.status = pickAllowed(patch.status, TASK_STATUS, DEFAULT_STATUS)
   }
-  next.updatedAt = now.toISOString()
   return next
 }
 

@@ -84,6 +84,12 @@ describe('createTask', () => {
     expect(created.deadline).toBe('2026-10-04T23:59:30')
   })
 
+  it('returns a null deadline when the draft has none, so the shape is stable', () => {
+    const created = createTask({ title: 'Esai', course: 'Fisika' }, CREATED_AT)
+    expect(created.deadline).toBeNull()
+    expect(Object.keys(created)).toContain('deadline')
+  })
+
   it('never adds an urgency field', () => {
     const created = createTask(VALID_DRAFT, CREATED_AT)
     expect('urgency' in created).toBe(false)
@@ -155,15 +161,32 @@ describe('updateTask', () => {
     const updated = updateTask(existing, { urgency: 'overdue' }, LATER)
     expect('urgency' in updated).toBe(false)
   })
+
+  it('drops an urgency field that was already on the input task', () => {
+    const polluted = { ...existing, urgency: 'overdue' }
+    const updated = updateTask(polluted, { status: 'done' }, LATER)
+    expect('urgency' in updated).toBe(false)
+  })
+
+  it('returns exactly the nine task fields', () => {
+    const updated = updateTask(existing, { status: 'done' }, LATER)
+    expect(Object.keys(updated).sort()).toEqual([
+      'course',
+      'createdAt',
+      'deadline',
+      'description',
+      'id',
+      'priority',
+      'status',
+      'title',
+      'updatedAt',
+    ])
+  })
 })
 
 describe('normalizeTask', () => {
-  const cleanEntry = () =>
-    createSampleTask({
-      id: 'task-9',
-      createdAt: '2026-10-01T08:00:00.000Z',
-      updatedAt: '2026-10-01T08:00:00.000Z',
-    })
+  // The shared fixture is already clean, so only the id needs to differ.
+  const cleanEntry = () => createSampleTask({ id: 'task-9' })
 
   it('returns null for null', () => {
     expect(normalizeTask(null, CREATED_AT)).toBeNull()
@@ -342,8 +365,18 @@ describe('normalizeTask', () => {
     expect(normalizeTask(clean, CREATED_AT)).toEqual(clean)
   })
 
+  it('leaves the shared sample task equal to its input, timestamps included', () => {
+    const sample = createSampleTask()
+    expect(normalizeTask(sample, CREATED_AT)).toEqual(sample)
+  })
+
   it('leaves a task created by createTask equal to its input', () => {
     const created = createTask(VALID_DRAFT, CREATED_AT)
+    expect(normalizeTask(created, LATER)).toEqual(created)
+  })
+
+  it('keeps a task created without a deadline equal to its input', () => {
+    const created = createTask({ title: 'Esai', course: 'Fisika' }, CREATED_AT)
     expect(normalizeTask(created, LATER)).toEqual(created)
   })
 })

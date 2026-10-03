@@ -53,7 +53,7 @@ src/
     base.css            Reset and element defaults
 ```
 
-Existing files: `src/main.jsx`, `src/App.jsx`, `src/App.css`, `src/index.css`. Reuse and extend rather than duplicate.
+Existing files: `src/main.jsx`, `src/App.jsx`, `src/styles/tokens.css`, `src/styles/base.css`. Reuse and extend rather than duplicate.
 
 ## Layering
 
