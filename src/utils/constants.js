@@ -47,3 +47,29 @@ export const DESCRIPTION_MAX_LENGTH = 1000
 
 export const DEFAULT_STATUS = TASK_STATUS.TODO
 export const DEFAULT_PRIORITY = TASK_PRIORITY.MEDIUM
+
+// The one value of the status and course filters that keeps every task.
+export const FILTER_ALL = 'all'
+
+// Deadline is the only sort key of the list, in both directions.
+export const SORT = Object.freeze({
+  DEADLINE_ASC: 'deadline_asc',
+  DEADLINE_DESC: 'deadline_desc',
+})
+
+export const SORT_LABELS = Object.freeze({
+  [SORT.DEADLINE_ASC]: 'Tenggat terdekat',
+  [SORT.DEADLINE_DESC]: 'Tenggat terjauh',
+})
+
+// Search, filters, and sort in one object: the shape applyQuery reads. It is
+// frozen, so a caller spreads it instead of writing into the default.
+export const DEFAULT_QUERY = Object.freeze({
+  search: '',
+  status: FILTER_ALL,
+  course: FILTER_ALL,
+  sort: SORT.DEADLINE_ASC,
+})
+
+// The search text has to settle before the list is filtered again.
+export const SEARCH_DEBOUNCE_MS = 250

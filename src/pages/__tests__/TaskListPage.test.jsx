@@ -1,6 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { useTaskFilters } from '../../hooks/useTaskFilters.js'
 import { STORAGE_KEY } from '../../repository/taskRepository.js'
 import { createSampleTask } from '../../test/sampleTask.js'
 import { TaskListPage } from '../TaskListPage.jsx'
@@ -10,8 +11,8 @@ import { TaskListPage } from '../TaskListPage.jsx'
 // against this fixed moment while the repository latency still uses real timers.
 const NOW = new Date(2026, 9, 4, 12, 0)
 
-// One task per urgency level, in the order they are stored. Nothing sorts yet,
-// so the page must keep this order.
+// One task per urgency level, in the order they are stored, which is also the
+// order the default sort returns: nothing done, then by deadline, done last.
 const OVERDUE = createSampleTask({
   id: 'task-overdue',
   title: 'Esai Fisika',
@@ -50,6 +51,13 @@ function seed(...tasks) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
 }
 
+// App owns the search and the filters, so the harness holds them the same way
+// and hands them to the page as one prop.
+function Harness({ onAddTask, onOpenTask }) {
+  const filters = useTaskFilters()
+  return <TaskListPage filters={filters} onAddTask={onAddTask} onOpenTask={onOpenTask} />
+}
+
 function blockStorage() {
   return vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
     throw new DOMException('Penyimpanan diblokir.', 'SecurityError')
@@ -76,7 +84,7 @@ afterEach(() => {
 
 describe('TaskListPage heading', () => {
   it('leaves the app name heading to the top bar', async () => {
-    render(<TaskListPage />)
+    render(<Harness />)
     // The only heading level 1 of the app now lives in TopBar.
     expect(screen.queryByRole('heading', { level: 1 })).toBeNull()
   })
@@ -85,13 +93,13 @@ describe('TaskListPage heading', () => {
 describe('TaskListPage with stored tasks', () => {
   it('shows one row per stored task', async () => {
     seed(OVERDUE, DUE_TODAY, THIS_WEEK, LATER, DONE)
-    render(<TaskListPage />)
+    render(<Harness />)
     expect(await screen.findAllByRole('listitem')).toHaveLength(5)
   })
 
   it('labels every row with the Indonesian label of its urgency', async () => {
     seed(OVERDUE, DUE_TODAY, THIS_WEEK, LATER, DONE)
-    render(<TaskListPage />)
+    render(<Harness />)
     const rows = await screen.findAllByRole('listitem')
     const labelled = rows.map((row) => {
       const badge = urgencyIn(row)
@@ -108,7 +116,7 @@ describe('TaskListPage with stored tasks', () => {
 
   it('shows the title, course, and status of the first task', async () => {
     seed(DUE_TODAY)
-    render(<TaskListPage />)
+    render(<Harness />)
     const [row] = await screen.findAllByRole('listitem')
     expect(within(row).getByRole('button', { name: 'Laporan Kimia' })).toBeInTheDocument()
     expect(within(row).getByText('Kimia')).toBeInTheDocument()
@@ -117,7 +125,7 @@ describe('TaskListPage with stored tasks', () => {
 
   it('shows the deadline of a task inside a time element', async () => {
     seed(DUE_TODAY)
-    render(<TaskListPage />)
+    render(<Harness />)
     const [row] = await screen.findAllByRole('listitem')
     const deadline = within(row).getByText(/2026/)
     expect(deadline.tagName).toBe('TIME')
@@ -126,7 +134,7 @@ describe('TaskListPage with stored tasks', () => {
 
   it('renders no emoji and no exclamation mark in the list', async () => {
     seed(OVERDUE, DUE_TODAY, THIS_WEEK, LATER, DONE)
-    render(<TaskListPage />)
+    render(<Harness />)
     await screen.findAllByRole('listitem')
     expect(document.body.textContent).not.toMatch(EMOJI)
     expect(document.body.textContent).not.toContain('!')
@@ -135,7 +143,7 @@ describe('TaskListPage with stored tasks', () => {
 
 describe('TaskListPage without stored tasks', () => {
   it('shows the empty state and one add action', async () => {
-    render(<TaskListPage />)
+    render(<Harness />)
     expect(await screen.findByText('Belum ada tugas.')).toBeInTheDocument()
     expect(screen.getByText('Tambah tugas pertamamu.')).toBeInTheDocument()
     expect(screen.getAllByRole('button')).toHaveLength(1)
@@ -145,13 +153,13 @@ describe('TaskListPage without stored tasks', () => {
   it('calls the onAddTask handler when the add button is clicked', async () => {
     const user = userEvent.setup()
     const onAddTask = vi.fn()
-    render(<TaskListPage onAddTask={onAddTask} />)
+    render(<Harness onAddTask={onAddTask} />)
     await user.click(await screen.findByRole('button', { name: 'Tambah tugas' }))
     expect(onAddTask).toHaveBeenCalledTimes(1)
   })
 
   it('renders no emoji and no exclamation mark in the empty state', async () => {
-    render(<TaskListPage />)
+    render(<Harness />)
     await screen.findByText('Belum ada tugas.')
     expect(document.body.textContent).not.toMatch(EMOJI)
     expect(document.body.textContent).not.toContain('!')
@@ -161,7 +169,7 @@ describe('TaskListPage without stored tasks', () => {
 describe('TaskListPage when storage cannot be read', () => {
   it('shows the failure message inside an alert', async () => {
     blockStorage()
-    render(<TaskListPage />)
+    render(<Harness />)
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'Penyimpanan tidak tersedia. Coba lagi.',
     )
@@ -169,7 +177,7 @@ describe('TaskListPage when storage cannot be read', () => {
 
   it('renders no emoji and no exclamation mark in the failure state', async () => {
     blockStorage()
-    render(<TaskListPage />)
+    render(<Harness />)
     await screen.findByRole('alert')
     expect(document.body.textContent).not.toMatch(EMOJI)
     expect(document.body.textContent).not.toContain('!')
@@ -179,7 +187,7 @@ describe('TaskListPage when storage cannot be read', () => {
     const user = userEvent.setup()
     const blocked = blockStorage()
     seed(DUE_TODAY)
-    render(<TaskListPage />)
+    render(<Harness />)
     await screen.findByRole('alert')
 
     blocked.mockRestore()

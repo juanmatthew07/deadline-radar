@@ -1,0 +1,74 @@
+/* The search field and the three selects. Mobile first: one column, label above
+   control. From 640px the search spans the row and the three selects share one
+   row of equal columns; from 900px all four share it with the search twice as
+   wide as a select. Every value comes from tokens.css. */
+
+.filter-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+  padding: var(--space-4);
+}
+
+.filter-row__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.filter-row__label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+/* The controls keep the 44px target, the control border, and the accent focus
+   from base.css, so the row adds nothing of its own to them. */
+.filter-row__input,
+.filter-row__select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+/* The icon sits inside the field, out of the way of the text and of clicks. */
+.filter-row__box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filter-row__icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+/* Enough room on the left that the text never runs into the icon. */
+.filter-row__input {
+  padding-left: calc(var(--space-3) + var(--space-6));
+}
+
+@media (min-width: 640px) {
+  .filter-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .filter-row__field--search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 900px) {
+  .filter-row {
+    grid-template-columns: 2fr repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+
+  .filter-row__field--search {
+    grid-column: auto;
+  }
+}

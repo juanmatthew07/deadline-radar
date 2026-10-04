@@ -1,5 +1,5 @@
 import Icon from './Icon.jsx'
-import { ClipboardList, Plus, TriangleAlert } from './icons.js'
+import { ClipboardList, Plus, Search, TriangleAlert } from './icons.js'
 import TaskRow from './TaskRow.jsx'
 import './TaskList.css'
 
@@ -10,21 +10,26 @@ const RETRY_LABEL = 'Coba lagi'
 const ADD_LABEL = 'Tambah tugas'
 const EMPTY_TITLE = 'Belum ada tugas.'
 const EMPTY_HINT = 'Tambah tugas pertamamu.'
+const NO_MATCH_TITLE = 'Tidak ada tugas yang cocok.'
+const NO_MATCH_HINT = 'Ubah kata kunci atau filter.'
+const RESET_FILTER_LABEL = 'Atur ulang filter'
 
 // Used when no open action is passed, so a card stays harmless.
 const noop = () => {}
 
-// The four states of the main screen: loading, error with retry, empty with one
-// action, or the cards in the order the service returned them. Sorting and
-// filtering arrive in a later milestone, so this component only renders.
+// The four states of the main screen: loading, error with retry, no match for the
+// current query, empty because nothing was ever stored, or the rows the service
+// returned for that query, already filtered and sorted.
 export function TaskList({
   tasks,
   status,
   error,
   isRefreshing,
+  noMatch = false,
   onAddTask,
   onOpenTask = noop,
   onRefresh,
+  onResetFilters = noop,
 }) {
   // One reference time per render, so every card judges urgency against the
   // same moment instead of drifting between cards.
@@ -68,6 +73,25 @@ export function TaskList({
         <p className="task-list__state-message">{message}</p>
         <button type="button" className="button button--secondary" onClick={onRefresh}>
           {RETRY_LABEL}
+        </button>
+      </div>
+    )
+  }
+
+  // Tasks are stored but the query kept none of them: that is the filters, not
+  // an empty storage, so it gets its own card and its own way back.
+  if (noMatch && status === 'ready') {
+    return (
+      <div className="card task-list__state">
+        <Icon as={Search} size={32} className="task-list__state-icon" />
+        <p className="task-list__state-title">{NO_MATCH_TITLE}</p>
+        <p className="task-list__state-hint">{NO_MATCH_HINT}</p>
+        <button
+          type="button"
+          className="button button--secondary"
+          onClick={onResetFilters}
+        >
+          {RESET_FILTER_LABEL}
         </button>
       </div>
     )

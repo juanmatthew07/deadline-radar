@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import TopBar from './components/TopBar.jsx'
+import { useTaskFilters } from './hooks/useTaskFilters.js'
 import TaskDetailPage from './pages/TaskDetailPage.jsx'
 import TaskFormPage from './pages/TaskFormPage.jsx'
 import TaskListPage from './pages/TaskListPage.jsx'
@@ -13,6 +14,10 @@ const DELETED_NOTICE = 'Tugas dihapus.'
 function App() {
   const [view, setView] = useState(LIST_VIEW)
   const [notice, setNotice] = useState('')
+  // App is never unmounted between views, so the search and the filters survive
+  // opening a task or the form and coming back. Nothing is stored, so a reload
+  // starts from the defaults again.
+  const filters = useTaskFilters()
   const isListView = view.name === 'list'
   const isDetailView = view.name === 'detail'
 
@@ -63,7 +68,12 @@ function App() {
       <TopBar onAddTask={openCreateForm} showAdd={isListView} />
       <main className="container page">
         {isListView ? (
-          <TaskListPage onAddTask={openCreateForm} onOpenTask={openTask} notice={notice} />
+          <TaskListPage
+            filters={filters}
+            onAddTask={openCreateForm}
+            onOpenTask={openTask}
+            notice={notice}
+          />
         ) : isDetailView ? (
           <TaskDetailPage
             task={view.task}

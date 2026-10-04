@@ -23,7 +23,8 @@
   color: var(--color-text-muted);
 }
 
-/* Empty and failure share one centred card: one icon, the words, one action. */
+/* Empty, no match, and failure share one centred card: one icon, the words, one
+   action. */
 .task-list__state {
   display: flex;
   flex-direction: column;

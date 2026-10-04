@@ -2,7 +2,10 @@ import { createTask, updateTask } from '../models/task.js'
 import { StorageError, taskRepository } from '../repository/taskRepository.js'
 import {
   COURSE_MAX_LENGTH,
+  DEFAULT_QUERY,
   DESCRIPTION_MAX_LENGTH,
+  FILTER_ALL,
+  SORT,
   TASK_PRIORITY,
   TASK_STATUS,
   TITLE_MAX_LENGTH,
@@ -17,6 +20,7 @@ const TEXT_FIELDS = ['title', 'course', 'description', 'deadline']
 
 const PRIORITY_VALUES = Object.values(TASK_PRIORITY)
 const STATUS_VALUES = Object.values(TASK_STATUS)
+const SORT_VALUES = Object.values(SORT)
 
 // Carries one message per field so a form can show them inline.
 export class ValidationError extends Error {
@@ -125,6 +129,112 @@ export async function remove(id) {
   return taskRepository.remove(id)
 }
 
-export const taskService = { list, create, update, remove, validateTask }
+// Every query field that is not a string falls back to the default, and a sort
+// direction outside SORT falls back too, because it cannot be honoured.
+function normalizeQuery(input) {
+  const source = isPlainObject(input) ? input : {}
+  return {
+    search: isProvided(source.search) ? text(source.search) : DEFAULT_QUERY.search,
+    status: isProvided(source.status) ? text(source.status) : DEFAULT_QUERY.status,
+    course: isProvided(source.course) ? text(source.course) : DEFAULT_QUERY.course,
+    sort: SORT_VALUES.includes(source.sort) ? source.sort : DEFAULT_QUERY.sort,
+  }
+}
+
+// The needle is already trimmed and lower-cased, and it matches the title or the
+// course only. The description is deliberately not searched.
+function matchesSearch(task, needle) {
+  if (!needle) return true
+  const title = text(task.title).toLowerCase()
+  const course = text(task.course).toLowerCase()
+  return title.includes(needle) || course.includes(needle)
+}
+
+function matchesQuery(task, query, needle, courseKey) {
+  if (!isPlainObject(task)) return false
+  if (!matchesSearch(task, needle)) return false
+  if (query.status !== FILTER_ALL && task.status !== query.status) return false
+  if (query.course !== FILTER_ALL && text(task.course).toLowerCase() !== courseKey) {
+    return false
+  }
+  return true
+}
+
+// The moment of the deadline, or null when there is none to sort by.
+function deadlineTime(task) {
+  const parsed = parseDeadline(task?.deadline)
+  return parsed ? parsed.getTime() : null
+}
+
+function createdTime(task) {
+  const time = Date.parse(text(task?.createdAt))
+  return Number.isNaN(time) ? 0 : time
+}
+
+// Unfinished work first in both directions, then the deadline, then the older
+// task, so two tasks never change places between renders.
+function compareTasks(direction) {
+  return (a, b) => {
+    const doneRank = Number(a.status === TASK_STATUS.DONE) - Number(b.status === TASK_STATUS.DONE)
+    if (doneRank !== 0) return doneRank
+
+    const left = deadlineTime(a)
+    const right = deadlineTime(b)
+    // A task without a usable deadline cannot be placed, so it goes last in both
+    // directions instead of jumping between them.
+    if (left === null || right === null) {
+      if (left !== right) return left === null ? 1 : -1
+    } else if (left !== right) {
+      return direction === SORT.DEADLINE_DESC ? right - left : left - right
+    }
+
+    const created = createdTime(a) - createdTime(b)
+    if (created !== 0) return created
+    const leftId = text(a.id)
+    const rightId = text(b.id)
+    if (leftId === rightId) return 0
+    return leftId < rightId ? -1 : 1
+  }
+}
+
+// Pure, synchronous, and never mutates its input. It returns a new array, an
+// empty one when there is nothing to query, and filters before it sorts.
+export function applyQuery(tasks, input) {
+  if (!Array.isArray(tasks)) return []
+
+  const query = normalizeQuery(input)
+  const needle = query.search.toLowerCase()
+  const courseKey = query.course.toLowerCase()
+  const matched = tasks.filter((task) => matchesQuery(task, query, needle, courseKey))
+
+  // The copy is what keeps the caller's array untouched by the sort.
+  return [...matched].sort(compareTasks(query.sort))
+}
+
+// The course names of these tasks, for the filter select: trimmed, empty names
+// dropped, compared without case but keeping the first spelling seen.
+export function getCourseOptions(tasks) {
+  if (!Array.isArray(tasks)) return []
+
+  const seen = new Map()
+  for (const task of tasks) {
+    const course = text(isPlainObject(task) ? task.course : '')
+    const key = course.toLowerCase()
+    if (!key || seen.has(key)) continue
+    seen.set(key, course)
+  }
+
+  return [...seen.values()].sort((a, b) => a.localeCompare(b, 'id', { sensitivity: 'base' }))
+}
+
+export const taskService = {
+  list,
+  create,
+  update,
+  remove,
+  validateTask,
+  applyQuery,
+  getCourseOptions,
+}
 
 export default taskService

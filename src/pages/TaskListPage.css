@@ -25,3 +25,20 @@
   font-size: var(--text-sm);
   color: var(--color-text);
 }
+
+/* What the filters produced: a quiet count, and the one way back to all of it. */
+.task-list-page__result-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+}
+
+.task-list-page__result {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
