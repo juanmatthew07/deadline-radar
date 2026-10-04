@@ -53,6 +53,13 @@ function App() {
     setView({ name: 'detail', task, from: 'list' })
   }
 
+  // The dashboard opens a task the same way, and remembers that Kembali returns
+  // to the dashboard instead of to the list.
+  function openDashboardTask(task) {
+    setNotice('')
+    setView({ name: 'detail', task, from: 'dashboard' })
+  }
+
   // Editing starts from the task on screen, so the form gets it and the way back
   // stays the same as it was.
   function openEditForm(task) {
@@ -94,7 +101,11 @@ function App() {
       />
       <main className="container page">
         {isDashboardView ? (
-          <DashboardPage onAddTask={openCreateForm} />
+          <DashboardPage
+            onAddTask={openCreateForm}
+            onOpenTask={openDashboardTask}
+            onViewAll={() => navigate('tasks')}
+          />
         ) : isListView ? (
           <TaskListPage
             filters={filters}

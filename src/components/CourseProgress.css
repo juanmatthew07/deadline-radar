@@ -1,0 +1,88 @@
+/* The card holds the overall progress and then one block per course: the name and
+   its percent on one line, the count below, and the bar under that. */
+
+.card.course-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .card.course-progress {
+    padding: var(--space-5);
+  }
+}
+
+.course-progress__title {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.course-progress__overall,
+.course-progress__course {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.course-progress__line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.course-progress__caption,
+.course-progress__name {
+  min-width: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  /* A long single word wraps instead of widening the card. */
+  overflow-wrap: break-word;
+}
+
+.course-progress__percent {
+  flex-shrink: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.course-progress__muted {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.course-progress__courses {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.course-progress__track {
+  height: var(--space-2);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-muted);
+  overflow: hidden;
+}
+
+.course-progress__fill {
+  height: 100%;
+  background-color: var(--urgency-done-strip);
+}
+
+.course-progress__more {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}

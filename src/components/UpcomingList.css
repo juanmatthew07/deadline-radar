@@ -1,0 +1,118 @@
+/* The card holds a plain list of rows: a hairline between them, the title line
+   with the badge at the right, and the metadata line below. The title control
+   reaches over the whole row through its overlay. */
+
+.card.upcoming-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .card.upcoming-list {
+    padding: var(--space-5);
+  }
+}
+
+.upcoming-list__title {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.upcoming-list__items {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.upcoming-list__item {
+  position: relative;
+  min-height: 44px;
+  padding-block: var(--space-3);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.upcoming-list__item:first-child {
+  border-top: 0;
+}
+
+.upcoming-list__item:hover {
+  background-color: var(--color-surface-muted);
+}
+
+/* The row carries the ring, so the outline is not drawn twice and the title
+   outline cannot be clipped by the row edges. */
+.upcoming-list__item:focus-within {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.upcoming-list__line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+}
+
+/* The title reads as text, not as a filled button. */
+.upcoming-list__open {
+  display: block;
+  min-width: 0;
+  min-height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  text-align: left;
+  /* A long single word wraps instead of widening the card. */
+  overflow-wrap: break-word;
+}
+
+/* The overlay makes the whole row clickable. */
+.upcoming-list__open::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.upcoming-list__open:focus-visible {
+  outline: none;
+}
+
+.upcoming-list__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.upcoming-list__fact {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.upcoming-list__deadline {
+  font-variant-numeric: tabular-nums;
+}
+
+.upcoming-list__empty {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}

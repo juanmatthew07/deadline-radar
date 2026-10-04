@@ -1,0 +1,82 @@
+/* The card holds the seven columns: a count, its bar, and the day. The track is
+   one fixed height and only the fill moves, so a bar is read by its height. */
+
+.card.workload-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .card.workload-chart {
+    padding: var(--space-5);
+  }
+}
+
+.workload-chart__title {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.workload-chart__summary {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.workload-chart__days {
+  display: grid;
+  /* Seven columns. The first one takes the width its own label needs, so
+     "Hari ini" is never squeezed at 320px; the other six share what is left. */
+  grid-template-columns: auto repeat(6, minmax(0, 1fr));
+  column-gap: var(--space-1);
+  align-items: end;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.workload-chart__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.workload-chart__count {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+/* The bar stands on a hairline, so a day with nothing to do still has an axis. */
+.workload-chart__track {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: calc(var(--space-7) * 3);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.workload-chart__fill {
+  width: 100%;
+  background-color: var(--color-accent);
+  border-top-start-radius: var(--radius-sm);
+  border-top-end-radius: var(--radius-sm);
+}
+
+/* Small and never wrapped, so seven labels fit on one row of a phone. */
+.workload-chart__label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.workload-chart__label--today {
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}

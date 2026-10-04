@@ -124,6 +124,20 @@ describe('App navigation', () => {
     expect(await screen.findByRole('heading', { level: 2, name: 'Ringkasan' })).toBeInTheDocument()
   })
 
+  it('opens an upcoming task from the dashboard and comes back to it', async () => {
+    const user = userEvent.setup()
+    seed(STORED)
+    render(<App />)
+    await screen.findByRole('heading', { level: 2, name: 'Ringkasan' })
+
+    await user.click(screen.getByRole('button', { name: 'Laporan Kimia' }))
+    await screen.findByRole('heading', { level: 2, name: 'Laporan Kimia' })
+
+    await user.click(screen.getByRole('button', { name: 'Kembali' }))
+
+    expect(await screen.findByRole('heading', { level: 2, name: 'Ringkasan' })).toBeInTheDocument()
+  })
+
   it('keeps one heading level 1 in every view', async () => {
     const user = userEvent.setup()
     seed(STORED)

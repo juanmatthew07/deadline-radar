@@ -1,6 +1,6 @@
-/* The home screen: the heading with the date, the stat tiles, and the space the
-   widgets below the tiles take. The empty, error, and loading states reuse the
-   same card shapes as the list page. */
+/* The home screen: the heading with the date, the stat tiles, and the three
+   widgets below them. The empty, error, and loading states reuse the same card
+   shapes as the list page. */
 
 .dashboard-page {
   display: flex;
@@ -30,6 +30,28 @@
   margin: 0;
   font-size: var(--text-sm);
   color: var(--color-text-muted);
+}
+
+/* The three widgets in the order they are read: the deadlines, the load of the
+   week, then the progress. */
+.dashboard-page__widgets {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+/* From 900px the deadlines take the wide left column for both rows and the other
+   two stack on the right. */
+@media (min-width: 900px) {
+  .dashboard-page__widgets {
+    grid-template-columns: 1.2fr 1fr;
+    align-items: start;
+  }
+
+  .dashboard-page__widgets > :first-child {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
 }
 
 /* Loading: five still tiles where the numbers will be, muted and without any

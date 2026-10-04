@@ -1,11 +1,21 @@
+import { useMemo } from 'react'
+import CourseProgress from '../components/CourseProgress.jsx'
 import Icon from '../components/Icon.jsx'
 import { ClipboardList, Plus, TriangleAlert } from '../components/icons.js'
 import SummaryTiles from '../components/SummaryTiles.jsx'
+import UpcomingList from '../components/UpcomingList.jsx'
+import WorkloadChart from '../components/WorkloadChart.jsx'
 import { useTasks } from '../hooks/useTasks.js'
 import { formatLongDate } from '../utils/date.js'
+import {
+  getCompletion,
+  getCourseProgress,
+  getUpcomingTasks,
+  getWorkload,
+} from '../utils/stats.js'
 import './DashboardPage.css'
 
-// Used when no add action is passed, so the empty card stays harmless.
+// Used when no action is passed, so a card stays harmless.
 const noop = () => {}
 
 const LOADING_LABEL = 'Memuat ringkasan...'
@@ -15,15 +25,24 @@ const ADD_LABEL = 'Tambah tugas'
 const EMPTY_TITLE = 'Belum ada tugas.'
 const EMPTY_HINT = 'Tambah tugas pertamamu.'
 const SUMMARY_TITLE = 'Ringkasan'
+const UPCOMING_LIMIT = 5
+const WORKLOAD_DAYS = 7
 
 // The home screen: every stored task at a glance. It holds no data logic, so the
-// hook owns the read and the counts come from the pure helpers, which is why the
-// screen shows all tasks and not the filtered view of the list.
-export function DashboardPage({ onAddTask = noop }) {
+// hook owns the read and the numbers come from the pure helpers over all stored
+// tasks, not over the filtered view of the list.
+export function DashboardPage({ onAddTask = noop, onOpenTask, onViewAll }) {
   const { tasks, status, error, refresh } = useTasks()
-  // One reference time per render, so the tiles and the date line above them
-  // describe the same moment.
+  // One reference time per render, so the tiles, the three widgets and the date
+  // line judge the same moment.
   const now = new Date()
+  // The statistics are pure, so the three that depend on the tasks alone are
+  // derived once per read. The workload follows the tiles instead and is judged
+  // against this render, so its days and their counts never disagree.
+  const upcoming = useMemo(() => getUpcomingTasks(tasks, UPCOMING_LIMIT), [tasks])
+  const workload = getWorkload(tasks, now, WORKLOAD_DAYS)
+  const courses = useMemo(() => getCourseProgress(tasks), [tasks])
+  const completion = useMemo(() => getCompletion(tasks), [tasks])
   const message = error || FAILED_TO_LOAD
 
   if (status === 'loading') {
@@ -89,7 +108,17 @@ export function DashboardPage({ onAddTask = noop }) {
         </div>
       ) : null}
       <SummaryTiles tasks={tasks} now={now} />
-      {/* The widgets of the dashboard, below the tiles. */}
+
+      <div className="dashboard-page__widgets">
+        <UpcomingList
+          tasks={upcoming}
+          now={now}
+          onOpenTask={onOpenTask}
+          onViewAll={onViewAll}
+        />
+        <WorkloadChart days={workload} />
+        <CourseProgress courses={courses} completion={completion} />
+      </div>
     </div>
   )
 }
