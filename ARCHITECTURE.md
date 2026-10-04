@@ -24,11 +24,13 @@ src/
   main.jsx              React entry point, imports tokens + global CSS
   App.jsx               Route/view switch, nothing else
   pages/                Screen-level composition
-    TaskListPage.jsx    Main screen: summary, filters, list, detail, form
+    DashboardPage.jsx   Home screen: summary tiles and the widgets below them
+    TaskListPage.jsx    Main screen: heading, notice, filters, list
     TaskDetailPage.jsx  (optional) single task view
   components/           Reusable, presentational
-    TopBar.jsx          App name, search input, add button
+    TopBar.jsx          App name, navigation tabs, add button
     SummaryStrip.jsx    Counts per urgency level
+    SummaryTiles.jsx    Five urgency stat tiles on the dashboard
     FilterRow.jsx       Status and course filters, sort control
     TaskList.jsx        List of rows, empty and loading states
     TaskRow.jsx         Title, course, deadline, urgency label, status
@@ -49,6 +51,7 @@ src/
   utils/
     urgency.js          Pure urgency derivation from deadline + status
     date.js             ISO parsing and formatting, day boundaries
+    stats.js            Pure dashboard statistics over all tasks
     id.js               Id generation
   styles/
     tokens.css          All CSS custom properties
@@ -208,3 +211,4 @@ Settled choices for this project. Where a decision contradicts an earlier sectio
 8. **Structure**: the `models/` folder, `src/models/task.js`, is part of the structure.
 9. **Icon library**: `lucide-react` is approved as the icon library. It may only be reached through `src/components/Icon.jsx`, a small wrapper component, and `src/components/icons.js`, the explicit list of allowed icons. No other icon library is approved, and `lucide-react` must not be imported anywhere else.
 10. **Design rules rewritten**: DESIGN.md was rewritten. Cards, colour, and light icons are allowed, and its forbidden list defines what must not be done.
+11. **Home screen and navigation**: the home screen is the Dashboard. Navigation is React view state only, one of `dashboard`, `list`, `detail` (with a `from` field), and `form` (with a `from` field), still no router and no History API. Dashboard statistics are derived by pure functions in `src/utils/stats.js` over ALL stored tasks, not over the filtered view like decision 6 says for the list, and they are never stored. Milestone M8 was redefined as the Dashboard and split: M8a is the screen, the navigation, the statistics, and the stat tiles; M8b adds the widgets below them.

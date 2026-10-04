@@ -11,6 +11,14 @@
   flex-direction: column;
 }
 
+/* The name of this screen, above the notice. The app name heading is in
+   TopBar.css, so this is the only heading level 2 of the page. */
+.task-list-page__title {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+}
+
 /* What happened, plainly. The banner is quiet on purpose: no animation, no
    exclamation mark, only the check and the message. */
 .task-list-page__notice {

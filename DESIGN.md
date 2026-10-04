@@ -38,6 +38,13 @@ Goal: a polished, modern productivity app in the spirit of Linear or Todoist, ma
 - States: loading uses static skeleton cards (muted blocks, no shimmer) plus the text "Memuat tugas..."; empty is a card with one muted ClipboardList icon, a title, one sentence, and one primary button; error is a card with TriangleAlert in the danger colour, the message, and a secondary "Coba lagi" button.
 - Motion: only colour, border-color, and box-shadow transitions of at most 150ms. Respect prefers-reduced-motion.
 
+## Dashboard and navigation
+- The home screen is the Dashboard: a page heading, the date, the stat tiles, and the widgets below them.
+- Navigation is a row of text tabs in the top bar (Dashboard, Tugas), never a menu and never icons. The active tab uses the accent colour, a 2px accent bottom border, and `aria-current="page"`. Inactive tabs use the muted text colour. Mobile first: the brand and the add action on the first row, the tabs on a second full-width row; from 768px the tabs sit inline after the brand with --space-5 on the left and the add action stays on the far right. The app has exactly one heading level 1, the app name.
+- Stat tiles show the urgency badge and a large tabular number. The badge and the number are the only content: a tile is not a link and not a button, so it carries no hover, no pointer, and no focus ring.
+- Bars, the workload and the progress of a course, use solid token colours and never a gradient. A bar is sized by its data, and a data-driven percentage width or height is the only allowed inline style in the app.
+- No chart library. Every value a bar or a chart shows also exists as visible text, or as visually hidden text next to the bar, so the number is never only in the shape.
+
 ## Forbidden
 - Emoji anywhere (UI, copy, comments).
 - Gradients of any kind, glassmorphism, blur effects, glow, coloured shadows.

@@ -1,5 +1,5 @@
-/* Full width bar on the raised surface, its content in the page container.
-   The gap between the name and the action is where the search field lands in M7. */
+/* Full width bar on the raised surface, its content in the page container: the
+   app name, the navigation tabs, and the one add action. */
 
 .top-bar {
   background-color: var(--color-surface-raised);
@@ -10,7 +10,6 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-3);
   min-height: 64px;
 }
@@ -20,4 +19,51 @@
   font-size: var(--text-xl);
   font-weight: var(--weight-semibold);
   color: var(--color-text);
+}
+
+/* Mobile first: the tabs take a row of their own under the name and the action,
+   which the add action pushes to the far right of the first row. */
+.top-bar__nav {
+  order: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.top-bar__add {
+  margin-left: auto;
+}
+
+/* A tab is a text button with no fill of its own, so only its label and the
+   accent underline mark it. The 44px target comes from the shared button base. */
+.top-bar__tab {
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background-color: transparent;
+  color: var(--color-text-muted);
+  font-weight: var(--weight-medium);
+  transition:
+    color var(--duration-fast) ease,
+    background-color var(--duration-fast) ease;
+}
+
+.top-bar__tab:hover {
+  background-color: var(--color-surface-muted);
+}
+
+.top-bar__tab[aria-current='page'] {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+/* From 768px the tabs sit inline after the name and the action stays far right. */
+@media (min-width: 768px) {
+  .top-bar__nav {
+    order: 0;
+    width: auto;
+    margin-left: var(--space-5);
+  }
 }

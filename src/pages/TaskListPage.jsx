@@ -12,6 +12,7 @@ import './TaskListPage.css'
 const noop = () => {}
 
 const RESET_LABEL = 'Atur ulang'
+const PAGE_TITLE = 'Daftar tugas'
 
 // The main screen. It owns no data logic: the hook holds the async state, the
 // service owns the query rules, and the list component only renders what is
@@ -51,6 +52,7 @@ export function TaskListPage({ filters, onAddTask, onOpenTask, notice }) {
 
   return (
     <div className="task-list-page">
+      <h2 className="task-list-page__title">{PAGE_TITLE}</h2>
       {notice ? (
         <p className="task-list-page__notice" role="status">
           <Icon as={Check} size={16} />

@@ -37,3 +37,4 @@ Hard rules for DeadlineRadar. If a task seems to need one of these broken, stop 
 16. `npm run lint` and `npm run build` must pass. No new ESLint warnings from `react-hooks` or `react-refresh`.
 17. Every feature needs tests. Vitest and React Testing Library are planned but not installed yet, so ask before adding them.
 18. Write code for a single user on their own laptop. No multi-user concerns, no concurrency handling, no optimistic locking.
+19. Inline styles are allowed only for data-driven percentage widths or heights of bars. Everything else that looks like a value belongs in a token in `src/styles/tokens.css`.

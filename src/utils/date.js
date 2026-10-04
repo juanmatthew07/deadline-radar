@@ -23,6 +23,14 @@ const timestampFormatter = new Intl.DateTimeFormat('id-ID', {
   timeStyle: 'short',
 })
 
+// A whole calendar day in words, for the date line above the summary tiles.
+const longDateFormatter = new Intl.DateTimeFormat('id-ID', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+})
+
 function buildLocalDate(year, month, day, hour, minute, second) {
   const date = new Date(year, month - 1, day, hour, minute, second, 0)
   // new Date() maps years 0-99 into the 1900s, so put the real year back.
@@ -79,6 +87,11 @@ export function formatDeadline(value) {
 
 export function toDeadlineInputValue(value) {
   return parseDeadline(value) ? value : ''
+}
+
+// The current day or any given day, spelled out in Indonesian local time.
+export function formatLongDate(date = new Date()) {
+  return longDateFormatter.format(date)
 }
 
 // A stored instant, shown in Indonesian local time. Anything that is not a

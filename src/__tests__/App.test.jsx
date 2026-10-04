@@ -30,6 +30,25 @@ function formHeading() {
   return screen.queryByRole('heading', { level: 2 })
 }
 
+// The dashboard is the home screen, so every test about the list opens the list
+// through the navigation first. The dashboard is ready once it has stopped
+// loading, which it shows either as the tiles or as the empty state.
+async function showList() {
+  await waitFor(() =>
+    expect(
+      screen.queryByRole('heading', { name: 'Ringkasan' }) ??
+        screen.queryByText('Belum ada tugas.') ??
+        screen.queryByRole('alert'),
+    ).not.toBeNull(),
+  )
+  fireEvent.click(screen.getByRole('button', { name: 'Tugas' }))
+}
+
+async function renderList() {
+  render(<App />)
+  await showList()
+}
+
 // jsdom cannot type into a datetime-local input, so the value is set directly.
 function setDeadline(value = DEADLINE) {
   fireEvent.change(screen.getByLabelText('Tenggat'), { target: { value } })
@@ -62,25 +81,25 @@ afterEach(() => {
 
 describe('App in the list view', () => {
   it('shows the empty state when nothing has been stored', async () => {
-    render(<App />)
+    await renderList()
     expect(await screen.findByText('Belum ada tugas.')).toBeInTheDocument()
   })
 
   it('offers the add action in the top bar and in the empty state', async () => {
-    render(<App />)
+    await renderList()
     await waitForEmptyState()
     expect(addButtons()).toHaveLength(2)
   })
 
   it('shows the stored tasks as rows', async () => {
     seed(STORED)
-    render(<App />)
+    await renderList()
     expect(await screen.findByText('Laporan Kimia')).toBeInTheDocument()
   })
 
   it('keeps one heading level 1 in the list view', async () => {
     seed(STORED)
-    render(<App />)
+    await renderList()
     await screen.findByText('Laporan Kimia')
     const headings = screen.getAllByRole('heading', { level: 1 })
     expect(headings).toHaveLength(1)
@@ -88,7 +107,7 @@ describe('App in the list view', () => {
   })
 
   it('renders no emoji and no exclamation mark in the list view', async () => {
-    render(<App />)
+    await renderList()
     await waitForEmptyState()
     expect(document.body.textContent).not.toMatch(EMOJI)
     expect(document.body.textContent).not.toContain('!')
@@ -98,7 +117,7 @@ describe('App in the list view', () => {
 describe('App opening the form', () => {
   it('opens the form from the top bar add action', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    await renderList()
 
     await openForm(user)
 
@@ -107,7 +126,7 @@ describe('App opening the form', () => {
 
   it('hides the add actions while the form is open', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    await renderList()
 
     await openForm(user)
 
@@ -116,7 +135,7 @@ describe('App opening the form', () => {
 
   it('renders no emoji and no exclamation mark in the form view', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    await renderList()
 
     await openForm(user)
 
@@ -126,7 +145,7 @@ describe('App opening the form', () => {
 
   it('keeps one heading level 1 in the form view', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    await renderList()
 
     await openForm(user)
 
@@ -137,7 +156,7 @@ describe('App opening the form', () => {
 
   it('returns to the list when the form is cancelled', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    await renderList()
     await openForm(user)
 
     await user.click(screen.getByRole('button', { name: 'Batal' }))
@@ -147,7 +166,7 @@ describe('App opening the form', () => {
 
   it('stores nothing when the form is cancelled', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    await renderList()
     await openForm(user)
     await fillRequiredFields(user)
 
@@ -161,7 +180,7 @@ describe('App opening the form', () => {
 describe('App adding a task', () => {
   it('shows the new task in the list after the save', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    await renderList()
     await openForm(user)
     await fillRequiredFields(user)
 
@@ -173,6 +192,7 @@ describe('App adding a task', () => {
   it('shows the stored task when the app is loaded again', async () => {
     const user = userEvent.setup()
     const first = render(<App />)
+    await showList()
     await openForm(user)
     await fillRequiredFields(user)
     await user.click(screen.getByRole('button', { name: 'Simpan' }))
@@ -180,13 +200,14 @@ describe('App adding a task', () => {
 
     first.unmount()
     render(<App />)
+    await showList()
 
     expect(await screen.findByText('Esai Fisika')).toBeInTheDocument()
   })
 
   it('renders the saved task as a row that opens in the list', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    await renderList()
     await openForm(user)
     await fillRequiredFields(user)
 
@@ -199,7 +220,7 @@ describe('App adding a task', () => {
 
   it('announces the save with a short notice inside a status role', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    await renderList()
     await openForm(user)
     await fillRequiredFields(user)
 
@@ -210,7 +231,7 @@ describe('App adding a task', () => {
 
   it('returns to the list view after the save', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    await renderList()
     await openForm(user)
     await fillRequiredFields(user)
 
@@ -222,7 +243,7 @@ describe('App adding a task', () => {
 
   it('clears the notice when the form opens again', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    await renderList()
     await openForm(user)
     await fillRequiredFields(user)
     await user.click(screen.getByRole('button', { name: 'Simpan' }))
@@ -235,7 +256,7 @@ describe('App adding a task', () => {
 
   it('keeps the notice on screen after the list reloads', async () => {
     const user = userEvent.setup()
-    render(<App />)
+    await renderList()
     await openForm(user)
     await fillRequiredFields(user)
     await user.click(screen.getByRole('button', { name: 'Simpan' }))

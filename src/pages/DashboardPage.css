@@ -1,0 +1,119 @@
+/* The home screen: the heading with the date, the stat tiles, and the space the
+   widgets below the tiles take. The empty, error, and loading states reuse the
+   same card shapes as the list page. */
+
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.dashboard-page__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.dashboard-page__title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+}
+
+.dashboard-page__date {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.dashboard-page__loading {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* Loading: five still tiles where the numbers will be, muted and without any
+   shimmer. */
+.dashboard-page__skeletons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dashboard-page__skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+
+.dashboard-page__skeleton-label,
+.dashboard-page__skeleton-number {
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-muted);
+}
+
+.dashboard-page__skeleton-label {
+  width: 60%;
+  height: var(--space-3);
+}
+
+.dashboard-page__skeleton-number {
+  width: 40%;
+  height: var(--space-4);
+}
+
+/* Empty and failure share one centred card: one icon, the words, one action. */
+.dashboard-page__state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  text-align: center;
+}
+
+.dashboard-page__state-icon {
+  color: var(--color-text-muted);
+}
+
+.dashboard-page__state-icon--danger {
+  color: var(--color-danger);
+}
+
+.dashboard-page__state-title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+}
+
+.dashboard-page__state-hint,
+.dashboard-page__state-message {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* A reload that failed while the tiles stay on screen: the message and the retry
+   sit beside each other above them. */
+.dashboard-page__notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-raised);
+}
+
+.dashboard-page__notice-message {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}
