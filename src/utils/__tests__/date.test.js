@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   addDays,
   formatDeadline,
+  formatTimestamp,
   isSameLocalDay,
   parseDeadline,
   startOfLocalDay,
@@ -159,5 +160,32 @@ describe('toDeadlineInputValue', () => {
 
   it('returns an empty string for null', () => {
     expect(toDeadlineInputValue(null)).toBe('')
+  })
+})
+
+describe('formatTimestamp', () => {
+  it('formats a valid ISO instant as a readable non-empty string', () => {
+    const formatted = formatTimestamp('2026-10-01T08:00:00.000Z')
+
+    expect(typeof formatted).toBe('string')
+    expect(formatted.length).toBeGreaterThan(0)
+    expect(formatted).not.toBe('-')
+    expect(formatted).toContain('2026')
+  })
+
+  it('returns "-" for null', () => {
+    expect(formatTimestamp(null)).toBe('-')
+  })
+
+  it('returns "-" for undefined', () => {
+    expect(formatTimestamp(undefined)).toBe('-')
+  })
+
+  it('returns "-" for a number, because a stored timestamp is a string', () => {
+    expect(formatTimestamp(1760000000000)).toBe('-')
+  })
+
+  it('returns "-" for text that is not a date', () => {
+    expect(formatTimestamp('not a date')).toBe('-')
   })
 })

@@ -116,4 +116,14 @@ describe('TaskRow', () => {
     expect('urgency' in task).toBe(false)
     expect(Object.keys(task)).not.toContain('urgency')
   })
+
+  it('renders without error when no open action was passed', () => {
+    render(
+      <ul>
+        <TaskRow task={createSampleTask({ title: 'Esai Fisika' })} now={NOW} />
+      </ul>,
+    )
+
+    expect(screen.getByRole('button', { name: 'Esai Fisika' })).toBeInTheDocument()
+  })
 })

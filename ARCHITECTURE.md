@@ -36,14 +36,18 @@ src/
     TaskRow.jsx         Title, course, deadline, urgency label, status
     TaskForm.jsx        Create and edit form with inline validation
     UrgencyBadge.jsx    Text label plus muted marker
-    DeleteDialog.jsx    Confirmation naming the task
+    ConfirmDialog.jsx  The one overlay: delete and import confirmations
+    DeleteDialog.jsx    Thin wrapper naming the task, over ConfirmDialog
+    BackupActions.jsx   Dashboard card for exporting and importing tasks
     Icon.jsx            Wrapper around lucide-react, the only importer of it
     icons.js            Explicit list of allowed icon components
   hooks/
     useTasks.js         Load, create, update, delete, search, filter, sort
+    useBackup.js        Export and import state, the pending confirmation
     useDebouncedValue.js
   services/
     taskService.js      Business logic: validation, search, filter, sort
+    backupService.js    Backup envelope, file parsing, and the import write
   repository/
     taskRepository.js   localStorage read/write, promise-based
   models/
@@ -52,6 +56,7 @@ src/
     urgency.js          Pure urgency derivation from deadline + status
     date.js             ISO parsing and formatting, day boundaries
     stats.js            Pure dashboard statistics over all tasks
+    download.js         Blob download and FileReader text read
     id.js               Id generation
   styles/
     tokens.css          All CSS custom properties
@@ -150,7 +155,8 @@ Components:
 - `TaskRow` renders title, course, formatted deadline, urgency label, and status for one task.
 - `TaskForm` renders labelled inputs, inline validation messages, and a submit button that is a verb.
 - `TaskDetail` renders one task and its edit and delete actions.
-- `DeleteDialog` is the only element allowed a shadow, because it is an overlay.
+- `ConfirmDialog` is the only element allowed a shadow, because it is the one overlay. It is shared: the delete confirmation is the danger tone, the import confirmation is the neutral tone.
+- `BackupActions` renders the export and import controls of the dashboard card, with the messages and the import confirmation.
 
 Services, `taskService.js`:
 
@@ -160,6 +166,13 @@ Services, `taskService.js`:
 - `applyQuery(tasks, { query, status, course, sort })` -> pure filter and sort.
 - `validateTask(draft)` -> `{ isValid, errors }` keyed by field, messages in Bahasa Indonesia.
 - Throws a validation error carrying field messages so the form can show them inline.
+
+Service, `backupService.js`, the only module besides `taskService` that reaches the repository:
+
+- `buildBackup(tasks, now)` / `createBackupFile(now)` -> the envelope `{ version: 1, exportedAt, tasks }` as file name and text, holding only the nine stored fields.
+- `parseBackup(text, now)` -> pure and synchronous; `{ tasks, total, skipped }` or a `BackupError` with an Indonesian message.
+- `checkImportFile(file)` -> rejects a file over `MAX_IMPORT_BYTES` before it is read.
+- `applyImport(tasks)` -> `repository.replaceAll`, so the data is replaced in one write, and returns how many tasks were written.
 
 Repository, `taskRepository.js`:
 
@@ -212,3 +225,4 @@ Settled choices for this project. Where a decision contradicts an earlier sectio
 9. **Icon library**: `lucide-react` is approved as the icon library. It may only be reached through `src/components/Icon.jsx`, a small wrapper component, and `src/components/icons.js`, the explicit list of allowed icons. No other icon library is approved, and `lucide-react` must not be imported anywhere else.
 10. **Design rules rewritten**: DESIGN.md was rewritten. Cards, colour, and light icons are allowed, and its forbidden list defines what must not be done.
 11. **Home screen and navigation**: the home screen is the Dashboard. Navigation is React view state only, one of `dashboard`, `list`, `detail` (with a `from` field), and `form` (with a `from` field), still no router and no History API. Dashboard statistics are derived by pure functions in `src/utils/stats.js` over ALL stored tasks, not over the filtered view like decision 6 says for the list, and they are never stored. Milestone M8 was redefined as the Dashboard and split: M8a is the screen, the navigation, the statistics, and the stat tiles; M8b adds the widgets below them.
+12. **Backup** (milestone M9). The file is the envelope `{ version: 1, exportedAt, tasks }`, holding only the nine stored fields and never a derived urgency. Import replaces every task through the repository `replaceAll`, behind a confirmation, so it goes through one write. The file is validated completely before anything is written: it must be JSON, an object, version 1, and it may hold at most 5000 tasks and 2 MB; entries that are invalid, repeat an id, or carry no usable deadline are skipped and counted. The backup UI is a card on the Dashboard, below the widgets and below the empty state so an import works with no data. `ConfirmDialog` is the single shared overlay: the danger tone for delete, the neutral tone for import.

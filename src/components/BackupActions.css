@@ -1,0 +1,61 @@
+/* The backup card of the dashboard: the shared card, a heading, one sentence,
+   the two actions, and the message of the last run. Tokens only. */
+
+.backup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .backup-actions {
+    padding: var(--space-5);
+  }
+}
+
+.backup-actions__title {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+}
+
+.backup-actions__hint,
+.backup-actions__empty {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* What happened, plainly: the same quiet banner the list page uses. */
+.backup-actions__notice {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--color-accent-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-accent-soft);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+/* A refused file or a failed write: the danger soft surface and the danger text,
+   so the failure is a colour and words, never colour alone. */
+.backup-actions__error {
+  margin: 0;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--color-danger);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-danger-soft);
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}
+
+/* The two actions in one row, wrapping to a second line on a narrow screen. */
+.backup-actions__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

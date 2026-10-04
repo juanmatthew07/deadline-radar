@@ -114,11 +114,16 @@ describe('DashboardPage while it loads', () => {
 })
 
 describe('DashboardPage without stored tasks', () => {
-  it('shows the empty state and one add action', async () => {
+  it('shows the empty state, one add action, and the backup card', async () => {
     render(<DashboardPage />)
     expect(await screen.findByText('Belum ada tugas.')).toBeInTheDocument()
     expect(screen.getByText('Tambah tugas pertamamu.')).toBeInTheDocument()
-    expect(screen.getAllByRole('button')).toHaveLength(1)
+    // The add action of the empty card, plus the two backup actions.
+    expect(screen.getAllByRole('button').map((control) => control.textContent)).toEqual([
+      'Tambah tugas',
+      'Ekspor data',
+      'Impor data',
+    ])
   })
 
   it('calls onAddTask when the add action is clicked', async () => {

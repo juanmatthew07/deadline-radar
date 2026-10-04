@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import BackupActions from '../components/BackupActions.jsx'
 import CourseProgress from '../components/CourseProgress.jsx'
 import Icon from '../components/Icon.jsx'
 import { ClipboardList, Plus, TriangleAlert } from '../components/icons.js'
@@ -79,14 +80,19 @@ export function DashboardPage({ onAddTask = noop, onOpenTask, onViewAll }) {
 
   if (tasks.length === 0) {
     return (
-      <div className="card dashboard-page__state">
-        <Icon as={ClipboardList} size={32} className="dashboard-page__state-icon" />
-        <p className="dashboard-page__state-title">{EMPTY_TITLE}</p>
-        <p className="dashboard-page__state-hint">{EMPTY_HINT}</p>
-        <button type="button" className="button button--primary" onClick={onAddTask}>
-          <Icon as={Plus} />
-          {ADD_LABEL}
-        </button>
+      <div className="dashboard-page">
+        <div className="card dashboard-page__state">
+          <Icon as={ClipboardList} size={32} className="dashboard-page__state-icon" />
+          <p className="dashboard-page__state-title">{EMPTY_TITLE}</p>
+          <p className="dashboard-page__state-hint">{EMPTY_HINT}</p>
+          <button type="button" className="button button--primary" onClick={onAddTask}>
+            <Icon as={Plus} />
+            {ADD_LABEL}
+          </button>
+        </div>
+        {/* An import is the way out of an empty dashboard, so the backup card sits
+            below this card too. */}
+        <BackupActions taskCount={tasks.length} onImported={refresh} />
       </div>
     )
   }
@@ -119,6 +125,8 @@ export function DashboardPage({ onAddTask = noop, onOpenTask, onViewAll }) {
         <WorkloadChart days={workload} />
         <CourseProgress courses={courses} completion={completion} />
       </div>
+
+      <BackupActions taskCount={tasks.length} onImported={refresh} />
     </div>
   )
 }

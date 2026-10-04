@@ -16,7 +16,7 @@ Goal: a polished, modern productivity app in the spirit of Linear or Todoist, ma
 ## Elevation and shape
 - Cards: --color-surface-raised, 1px --color-border, --radius-md, --shadow-card. When a card is interactive, hover adds --shadow-card-hover and --color-border-strong.
 - Controls (buttons, inputs, selects) use --radius-sm. Badges use --radius-pill. The dialog uses --radius-lg.
-- Only three shadow tokens exist: --shadow-card, --shadow-card-hover, --shadow-overlay. --shadow-overlay is used only by the delete dialog. Shadows are neutral and soft, never coloured.
+- Only three shadow tokens exist: --shadow-card, --shadow-card-hover, --shadow-overlay. --shadow-overlay is used only by ConfirmDialog, for the delete and the import confirmations. Shadows are neutral and soft, never coloured.
 
 ## Icons
 - Library: lucide-react, used ONLY through src/components/Icon.jsx (a small wrapper) and src/components/icons.js (the explicit list of allowed icons). Never import from "lucide-react" anywhere else.
@@ -29,7 +29,7 @@ Goal: a polished, modern productivity app in the spirit of Linear or Todoist, ma
 - System font stack, no web fonts. Hierarchy comes from size and weight: headings semibold, task titles semibold, metadata small and muted. Tabular numbers for dates and counts. Sentence case.
 
 ## Components
-- Buttons: primary (accent fill, white text, darker on hover), secondary (raised surface, 1px control border, normal text colour), danger (raised surface, 1px danger border, danger text). A filled danger button is allowed only for the confirm button inside the delete dialog. Minimum height 44px, icon and label separated by --space-2.
+- Buttons: primary (accent fill, white text, darker on hover), secondary (raised surface, 1px control border, normal text colour), danger (raised surface, 1px danger border, danger text). A filled danger button is allowed only for the confirm button of a destructive confirmation. Minimum height 44px, icon and label separated by --space-2.
 - Urgency badge: pill with the tint background, the foreground colour, and the text label (Terlambat, Hari ini, Minggu ini, Nanti, Selesai). Colour is never the only signal.
 - Task card: 4px left strip in the urgency strip colour; first line has the title and the badge aligned right; a muted metadata line below (course with BookOpen, deadline with Calendar, status as a small outlined label). A done task has a muted title with line-through and shows no separate status label, because the badge already says Selesai.
 - Summary strip (milestone M8): a row of five small stat tiles, each with a number and the urgency label, wrapping on narrow screens.
@@ -45,13 +45,20 @@ Goal: a polished, modern productivity app in the spirit of Linear or Todoist, ma
 - Bars, the workload and the progress of a course, use solid token colours and never a gradient. A bar is sized by its data, and a data-driven percentage width or height is the only allowed inline style in the app.
 - No chart library. Every value a bar or a chart shows also exists as visible text, or as visually hidden text next to the bar, so the number is never only in the shape.
 
+## Backup
+- A "Cadangan data" card at the bottom of the Dashboard, below the widgets, and below the empty state so a first import works with no data: one muted sentence and two secondary buttons, "Ekspor data" with the Download icon and "Impor data" with the Upload icon.
+- Exported file: `deadlineradar-backup-YYYY-MM-DD.json`, with the local date. It holds the envelope `{ version: 1, exportedAt, tasks }`, and never a derived urgency.
+- The file input is hidden and opened by the "Impor data" button. A file is read and validated completely before anything is stored, and the import replaces every task through the repository, so it is behind a confirmation.
+- The confirmation is the shared ConfirmDialog in the neutral tone: no danger colours, and the confirm button is the primary button. The delete confirmation is the same dialog in the danger tone.
+- Every message of the card is plain: the result in a notice with role status, a failure in an alert, and the confirmation names both counts and says it cannot be undone.
+
 ## Forbidden
 - Emoji anywhere (UI, copy, comments).
 - Gradients of any kind, glassmorphism, blur effects, glow, coloured shadows.
 - Purple, violet, pink, blue-to-purple schemes, or more than one accent hue.
 - Icons inside coloured circles or squares, icon-led feature grids, decorative illustrations.
 - Marketing hero sections, taglines, "Selamat datang" banners, exclamation marks in copy.
-- Border radius above 14px (pill badges excepted), heavy shadows, shadows on anything other than cards, the delete dialog, and interactive hover states.
+- Border radius above 14px (pill badges excepted), heavy shadows, shadows on anything other than cards, the confirmation dialog, and interactive hover states.
 - Placeholder text such as lorem ipsum or "Task 1".
 - Animation beyond the 150ms transitions above (no bounce, scale, pulse, or shimmer).
 - Hard-coded colours, sizes, radii, or shadows outside tokens.css.

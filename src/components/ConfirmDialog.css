@@ -1,0 +1,86 @@
+/* The one confirmation overlay of the app: a backdrop over the whole screen and
+   a small panel in the middle. The panel carries the single overlay shadow of
+   the app, because this is the only thing above the page. Touch targets and the
+   focus outline come from base.css. */
+
+/* The one animation of the app: a short fade of the backdrop. The reduced
+   motion rule in tokens.css turns it off. */
+@keyframes confirm-dialog-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.confirm-dialog__backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background-color: var(--color-backdrop);
+  animation: confirm-dialog-fade var(--duration-fast) ease-out;
+}
+
+.confirm-dialog__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-overlay);
+}
+
+.confirm-dialog__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+}
+
+/* Only the destructive confirmation warns with an icon, and only through the
+   danger colour plus the wording beside it. */
+.confirm-dialog__icon--danger {
+  color: var(--color-danger);
+}
+
+.confirm-dialog__body {
+  margin: 0;
+  font-size: var(--text-sm);
+  /* The named title or the two counts can be long, so the text wraps instead of
+     widening the panel. */
+  overflow-wrap: break-word;
+}
+
+/* A failed run keeps the panel open, so the message sits above the actions with
+   room for the retry. */
+.confirm-dialog__error {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}
+
+.confirm-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* Both actions are unavailable while the run is pending, and they say so by
+   dropping back to the neutral border and text. */
+.confirm-dialog__actions button:disabled {
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+  cursor: default;
+}
