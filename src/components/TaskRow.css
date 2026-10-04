@@ -1,0 +1,70 @@
+/* One task: title and course on the left, deadline, urgency, and status after.
+   Rows are separated by a 1px border, never by a card or a shadow. */
+
+.task-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.task-row__main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.task-row__title {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  /* A long single word wraps instead of widening the row on a narrow screen. */
+  overflow-wrap: break-word;
+}
+
+.task-row__course {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  overflow-wrap: break-word;
+}
+
+.task-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+
+.task-row__deadline {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.task-row__status {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* Wide screens line the five fields up as columns. The two wrappers only exist
+   for the single column layout, so they stop being boxes here and their
+   children become the grid items of the row. */
+@media (min-width: 48rem) {
+  .task-row {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    column-gap: var(--space-4);
+    padding: var(--space-3) 0;
+  }
+
+  .task-row__main,
+  .task-row__meta {
+    display: contents;
+  }
+}

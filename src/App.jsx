@@ -1,10 +1,10 @@
+import TaskListPage from './pages/TaskListPage.jsx'
+
+// The add form arrives in M5, so this action has no destination yet.
+function handleAddTask() {}
+
 function App() {
-  return (
-    <main>
-      <h1>DeadlineRadar</h1>
-      <p>Catat tugas dan tenggat kuliah.</p>
-    </main>
-  )
+  return <TaskListPage onAddTask={handleAddTask} />
 }
 
 export default App

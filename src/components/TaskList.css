@@ -1,0 +1,83 @@
+/* The task list and its three non list states. Rows come from TaskRow.css.
+   One button style is shared by the two actions, so the list never grows a
+   second button variant. */
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.task-list__state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-raised);
+}
+
+.task-list__message {
+  margin: 0;
+  font-size: var(--text-base);
+  color: var(--color-text);
+}
+
+.task-list__hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* A failure while the rows stay on screen: the message and the retry sit
+   beside each other, in colour as text only. */
+.task-list__notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-raised);
+}
+
+.task-list__notice .task-list__message {
+  color: var(--color-danger);
+  font-size: var(--text-sm);
+}
+
+/* The single accent: the one action of a state. Focus and touch target come
+   from base.css. */
+.task-list__action {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-weight: var(--weight-medium);
+}
+
+.task-list__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+/* Static skeleton blocks: muted, still, and hidden from the screen reader. */
+.task-list__skeletons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.task-list__skeleton {
+  height: var(--space-7);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-border);
+}

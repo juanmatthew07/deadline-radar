@@ -1,0 +1,35 @@
+/* Text label plus a small muted marker. Never a coloured fill on its own. */
+
+.urgency-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* The marker is a thin bar, not an icon in a circle. */
+.urgency-badge::before {
+  content: '';
+  width: var(--space-1);
+  height: var(--space-3);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-border);
+}
+
+.urgency-badge[data-urgency='overdue'] {
+  color: var(--color-urgency-overdue);
+}
+
+.urgency-badge[data-urgency='overdue']::before {
+  background-color: var(--color-urgency-overdue);
+}
+
+.urgency-badge[data-urgency='due_today'] {
+  color: var(--color-urgency-today);
+}
+
+.urgency-badge[data-urgency='due_today']::before {
+  background-color: var(--color-urgency-today);
+}
