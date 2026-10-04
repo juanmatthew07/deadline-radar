@@ -6,15 +6,17 @@ import './TaskListPage.css'
 const noop = () => {}
 
 // The main screen. It owns no data logic: the hook holds the async state and
-// the list component only renders it. The full top bar arrives in M5.
-export function TaskListPage({ onAddTask }) {
+// the list component only renders it. The app name heading lives in TopBar.
+export function TaskListPage({ onAddTask, notice }) {
   const { tasks, status, error, isRefreshing, refresh } = useTasks()
 
   return (
     <main className="task-list-page">
-      <header className="task-list-page__header">
-        <h1 className="task-list-page__title">DeadlineRadar</h1>
-      </header>
+      {notice ? (
+        <p className="task-list-page__notice" role="status">
+          {notice}
+        </p>
+      ) : null}
       <TaskList
         tasks={tasks}
         status={status}

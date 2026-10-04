@@ -75,6 +75,22 @@ button {
   cursor: pointer;
 }
 
+/* Shared button variants, so the one primary action of a screen looks the same
+   wherever it sits. The accent stays on the primary button only. */
+.button--primary {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-weight: var(--weight-medium);
+}
+
+.button--secondary {
+  background-color: var(--color-surface-raised);
+  border-color: var(--color-border);
+  color: var(--color-text);
+  font-weight: var(--weight-medium);
+}
+
 /* Accessibility utility: hide visually, keep for screen readers */
 .visually-hidden {
   position: absolute;

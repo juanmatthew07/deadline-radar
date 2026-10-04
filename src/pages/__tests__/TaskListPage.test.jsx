@@ -74,11 +74,10 @@ afterEach(() => {
 })
 
 describe('TaskListPage heading', () => {
-  it('shows exactly one heading level 1 with the app name', async () => {
+  it('leaves the app name heading to the top bar', async () => {
     render(<TaskListPage />)
-    const headings = screen.getAllByRole('heading', { level: 1 })
-    expect(headings).toHaveLength(1)
-    expect(headings[0]).toHaveTextContent('DeadlineRadar')
+    // The only heading level 1 of the app now lives in TopBar.
+    expect(screen.queryByRole('heading', { level: 1 })).toBeNull()
   })
 })
 

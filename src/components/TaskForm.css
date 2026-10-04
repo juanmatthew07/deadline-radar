@@ -1,0 +1,77 @@
+/* The form: one column, label above the control, message under it. Every value
+   comes from tokens.css. Controls keep the 44px target and the 1px border from
+   base.css. */
+
+.task-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.task-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.task-form__label-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.task-form__label {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+/* Wajib and opsional are words, not asterisks, so a required field is obvious
+   without relying on colour. */
+.task-form__mark {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.task-form__control {
+  display: block;
+  width: 100%;
+}
+
+/* The message under the field is the feedback, and the border is a second
+   signal, so the state is never colour alone. */
+.task-form__control[aria-invalid='true'] {
+  border-color: var(--color-danger);
+}
+
+.task-form__error {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-danger);
+}
+
+/* A save that failed: the message and its retry side by side, in a raised
+   surface with a 1px border and no shadow. */
+.task-form__failure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-raised);
+}
+
+.task-form__failure-message {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}
+
+.task-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

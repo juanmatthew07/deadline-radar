@@ -1,4 +1,5 @@
-/* The main screen: a plain header, then the list. No hero, no centred block. */
+/* The main screen: a short notice, then the list. The app name heading is in
+   TopBar.css, so this page has no header of its own. */
 
 .task-list-page {
   display: flex;
@@ -6,14 +7,9 @@
   gap: var(--space-4);
 }
 
-.task-list-page__header {
-  padding-bottom: var(--space-3);
-  border-bottom: var(--border-width) solid var(--color-border);
-}
-
-.task-list-page__title {
+/* What happened, plainly. No icon, no celebration. */
+.task-list-page__notice {
   margin: 0;
-  font-size: var(--text-xl);
-  font-weight: var(--weight-semibold);
-  text-align: left;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
 }
