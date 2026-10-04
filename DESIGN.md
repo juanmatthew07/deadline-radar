@@ -1,51 +1,56 @@
 # DESIGN.md
 
-The interface must look like a calm, purpose-built productivity tool made by a person, not like generic AI-generated output. Every rule here is checkable.
+Goal: a polished, modern productivity app in the spirit of Linear or Todoist, made by a person. Cards, colour, and light icons are welcome. What makes an interface look machine-generated is listed under "Forbidden". Everything else is allowed when it is consistent and restrained.
 
-## Visual direction
+## Layout
+- Page background is --color-surface. Content sits on --color-surface-raised cards.
+- The top bar spans the full width (raised surface, 1px bottom border). Its content and all page content live in a centred container: max width --container-max, horizontal padding --space-4 on mobile and --space-6 from 768px up. Content is never left-aligned in a narrow column on a wide screen.
+- Mobile first, single column. Spacing uses the 4px token scale. Cards in a list are separated by --space-3.
 
-Information-first and dense but readable. The task list is the main screen. No hero section, no landing page, no onboarding detour.
+## Colour
+- One accent hue: teal (--color-accent), used for primary buttons, the focus ring, links, and selected states. Neutral cool grays for everything else.
+- Urgency uses tinted badges. Each level has a foreground, a background, and a strip token: overdue is red, due today is amber, this week is teal, later is gray, done is green.
+- Danger red is for destructive actions and errors only.
+- No other hues. Text and control colours meet WCAG AA.
 
-- **Tokens, not literals.** Plain CSS only. All values live as custom properties in one tokens file, `src/styles/tokens.css`, grouped as colors, spacing, type scale, radii, and border widths. Components reference `var(--...)` only. A hard-coded hex, pixel value, or duration inside a component is a defect. The starter tokens in `src/index.css` are replaced, not extended.
-- **Spacing** is a 4px scale: 4, 8, 12, 16, 24, 32, 48. Nothing else.
-- **Palette.** Neutral surfaces: off-white page, white or near-white raised surface, one or two grays for borders and secondary text. Near-black text. Exactly ONE accent color, used sparingly: primary action button, focus ring, active filter. Urgency colors are muted and appear only as small markers or text, never as large fills.
-- **Typography.** System font stack, no web font imports. Hierarchy through size and weight only. Tabular numbers (`font-variant-numeric: tabular-nums`) for dates and counts so columns align. Sentence case everywhere, including titles.
-- **Shape.** Border radius 4px, 6px maximum. 1px borders instead of shadows. At most one subtle shadow in the whole app, on the delete confirmation dialog, because it is an overlay.
-- **Layout.** Mobile-first, single column, max content width around 720px. Top bar with the app name, search, and the add button. Then a summary strip. Then a filter row. Then the task list as rows: title, course, deadline, urgency label, status. Detail and edit open as a panel or page, never as a modal stack.
+## Elevation and shape
+- Cards: --color-surface-raised, 1px --color-border, --radius-md, --shadow-card. When a card is interactive, hover adds --shadow-card-hover and --color-border-strong.
+- Controls (buttons, inputs, selects) use --radius-sm. Badges use --radius-pill. The dialog uses --radius-lg.
+- Only three shadow tokens exist: --shadow-card, --shadow-card-hover, --shadow-overlay. --shadow-overlay is used only by the delete dialog. Shadows are neutral and soft, never coloured.
+
+## Icons
+- Library: lucide-react, used ONLY through src/components/Icon.jsx (a small wrapper) and src/components/icons.js (the explicit list of allowed icons). Never import from "lucide-react" anywhere else.
+- Style: outline, strokeWidth 1.75, size 18 (16 inside metadata rows, 32 in empty and error states), colour currentColor, aria-hidden.
+- Allowed icons: Plus, Search, Calendar, BookOpen, Pencil, Trash2, ArrowLeft, Check, TriangleAlert, ClipboardList, Download, Upload, X.
+- Icons always sit next to a text label. The only exception is a control that has an aria-label.
+- Icons are never placed inside coloured circles or squares, never used as feature-card headers, and one label gets at most one icon.
+
+## Typography
+- System font stack, no web fonts. Hierarchy comes from size and weight: headings semibold, task titles semibold, metadata small and muted. Tabular numbers for dates and counts. Sentence case.
+
+## Components
+- Buttons: primary (accent fill, white text, darker on hover), secondary (raised surface, 1px control border, normal text colour), danger (raised surface, 1px danger border, danger text). A filled danger button is allowed only for the confirm button inside the delete dialog. Minimum height 44px, icon and label separated by --space-2.
+- Urgency badge: pill with the tint background, the foreground colour, and the text label (Terlambat, Hari ini, Minggu ini, Nanti, Selesai). Colour is never the only signal.
+- Task card: 4px left strip in the urgency strip colour; first line has the title and the badge aligned right; a muted metadata line below (course with BookOpen, deadline with Calendar, status as a small outlined label). A done task has a muted title with line-through and shows no separate status label, because the badge already says Selesai.
+- Summary strip (milestone M8): a row of five small stat tiles, each with a number and the urgency label, wrapping on narrow screens.
+- Forms: card container, labels above fields, inputs with a 1px --color-border-control border and an accent focus ring. Invalid inputs get a --color-danger border and the message below. Two-column rows from 640px up, single column on mobile.
+- Notice banner: small block with --color-accent-soft background, a 1px --color-accent-border border, a Check icon, and the message, with role status.
+- States: loading uses static skeleton cards (muted blocks, no shimmer) plus the text "Memuat tugas..."; empty is a card with one muted ClipboardList icon, a title, one sentence, and one primary button; error is a card with TriangleAlert in the danger colour, the message, and a secondary "Coba lagi" button.
+- Motion: only colour, border-color, and box-shadow transitions of at most 150ms. Respect prefers-reduced-motion.
 
 ## Forbidden
-
-- Emoji anywhere: UI, code comments, commit text, copy, or docs.
-- Gradients, glassmorphism, glow effects, blurred blobs, decorative illustrations, stock imagery.
-- Purple-to-blue colour schemes.
-- Icons inside coloured circles, icon-led feature cards, or any icon library. Use plain text labels. Inline SVG only when a control truly needs a symbol, kept simple.
-- Centred hero sections, marketing copy, taglines, "Selamat datang" banners, or exclamation marks in copy.
-- Uniform grids of identical rounded cards with shadows.
-- Placeholder text such as lorem ipsum, "Task 1", or "Tugas 1".
-- Animations beyond short, under 150ms, opacity or colour transitions. Respect `prefers-reduced-motion`.
+- Emoji anywhere (UI, copy, comments).
+- Gradients of any kind, glassmorphism, blur effects, glow, coloured shadows.
+- Purple, violet, pink, blue-to-purple schemes, or more than one accent hue.
+- Icons inside coloured circles or squares, icon-led feature grids, decorative illustrations.
+- Marketing hero sections, taglines, "Selamat datang" banners, exclamation marks in copy.
+- Border radius above 14px (pill badges excepted), heavy shadows, shadows on anything other than cards, the delete dialog, and interactive hover states.
+- Placeholder text such as lorem ipsum or "Task 1".
+- Animation beyond the 150ms transitions above (no bounce, scale, pulse, or shimmer).
+- Hard-coded colours, sizes, radii, or shadows outside tokens.css.
 
 ## Copy rules (Bahasa Indonesia)
+- Short, direct, neutral. Say what happened and what to do next. Buttons are verbs. The delete confirmation names the task and states it cannot be undone.
 
-Short, direct, neutral. Say what happened, then what to do next. No filler, no enthusiasm.
-
-- Empty: "Belum ada tugas. Tambah tugas pertamamu."
-- No search results: "Tidak ada tugas yang cocok."
-- Failure: "Gagal menyimpan. Coba lagi."
-- Success, inline: "Tugas disimpan."
-- Buttons are verbs: "Simpan", "Hapus", "Tambah tugas", "Batal", "Ulangi".
-- Delete confirmation names the task and states it cannot be undone: "Hapus tugas 'Esai Fisika'? Tindakan ini tidak dapat dibatalkan."
-- Urgency labels: "Terlambat", "Hari ini", "Minggu ini", "Nanti", "Selesai".
-- Status labels: "Belum", "Dikerjakan", "Selesai".
-- Validation messages sit under the field and say how to fix it: "Judul wajib diisi."
-
-## States and accessibility
-
-- Loading: simple text or skeleton rows. Never a spinner alone.
-- Empty: state the reason and offer one action.
-- Error: state the problem and offer retry.
-- Success: short inline message. No celebratory toast, no confetti, no "Berhasil!".
-- Urgency is never colour alone. Always a text label next to any colour marker.
-- Every input has a visible label, not a placeholder as a substitute, and an inline validation message linked to the field.
-- Visible focus style on every interactive element: 2px accent outline with offset.
-- Touch targets at least 44px high.
-- Text contrast meets WCAG AA. Check muted greys and muted urgency colours, not only pure black on white.
+## Accessibility
+- Every input has a visible label and an inline message. Visible focus on all interactive elements. Touch targets at least 44px. Urgency and status are always conveyed in text. Contrast meets WCAG AA.

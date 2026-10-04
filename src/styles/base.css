@@ -1,4 +1,5 @@
-/* Global reset and element defaults. Values come from tokens.css only. */
+/* Global reset, element defaults, and the shared container, card, and button
+   classes. Values come from tokens.css only. */
 
 /* Minimal reset */
 *,
@@ -14,12 +15,6 @@ body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: var(--leading-normal);
-}
-
-/* Single column, capped width, left aligned */
-#root {
-  max-width: 720px;
-  padding: var(--space-4);
 }
 
 h1,
@@ -41,54 +36,139 @@ h3 {
   font-size: var(--text-base);
 }
 
+/* The centred container every screen uses, on a full width top bar. */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-inline: var(--space-6);
+  }
+}
+
+/* Raised content surface: the card border and shadow of the design. */
+.card {
+  background-color: var(--color-surface-raised);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
 /* Visible focus on every interactive element */
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
-/* Form controls and buttons: 44px touch target, 1px border, small radius */
-input,
-select,
-textarea,
-button {
-  font: inherit;
-  color: var(--color-text);
-  min-height: 44px;
-  border: var(--border-width) solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background-color: var(--color-surface-raised);
-}
-
+/* Form controls: 44px touch target, control border, small radius. Focus stays
+   on the global accent outline above, so no control adds its own ring. */
 input,
 select,
 textarea {
+  font: inherit;
+  color: var(--color-text);
+  min-height: 44px;
   padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--color-border-control);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-raised);
 }
 
 textarea {
   resize: vertical;
 }
 
+/* An invalid field keeps the accent focus and says so with a danger border. */
+input[aria-invalid='true'],
+select[aria-invalid='true'],
+textarea[aria-invalid='true'] {
+  border-color: var(--color-danger);
+}
+
+/* Element default for a button that has no .button class yet. */
 button {
+  font: inherit;
+  color: var(--color-text);
+  min-height: 44px;
   padding: var(--space-2) var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface-raised);
   cursor: pointer;
 }
 
-/* Shared button variants, so the one primary action of a screen looks the same
-   wherever it sits. The accent stays on the primary button only. */
+/* Shared button base: one label, one optional icon, 44px target. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding-inline: var(--space-4);
+  border-radius: var(--radius-sm);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease;
+}
+
+/* The one accent per screen: primary buttons, focus ring, selected states. */
 .button--primary {
   background-color: var(--color-accent);
   border-color: var(--color-accent);
   color: var(--color-accent-contrast);
-  font-weight: var(--weight-medium);
 }
 
+.button--primary:hover {
+  background-color: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+/* Neutral action on the raised surface, labelled by its text. */
 .button--secondary {
   background-color: var(--color-surface-raised);
-  border-color: var(--color-border);
+  border-color: var(--color-border-control);
   color: var(--color-text);
-  font-weight: var(--weight-medium);
+}
+
+.button--secondary:hover {
+  background-color: var(--color-surface-muted);
+}
+
+/* The one destructive action of a screen: danger border and danger text, so
+   the label always carries it. */
+.button--danger {
+  background-color: var(--color-surface-raised);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.button--danger:hover {
+  background-color: var(--color-danger-soft);
+}
+
+/* Filled danger is allowed only for the confirm button of the delete dialog. */
+.button--danger-filled {
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+  color: var(--color-accent-contrast);
+}
+
+.button--danger-filled:hover {
+  background-color: var(--color-danger-hover);
+  border-color: var(--color-danger-hover);
+}
+
+/* Disabled buttons say so by fading and by refusing the pointer. */
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Accessibility utility: hide visually, keep for screen readers */

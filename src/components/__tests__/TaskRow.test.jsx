@@ -1,5 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { describe, expect, it, vi } from 'vitest'
 import { createSampleTask } from '../../test/sampleTask.js'
 import { TaskRow } from '../TaskRow.jsx'
 
@@ -7,10 +8,10 @@ import { TaskRow } from '../TaskRow.jsx'
 const NOW = new Date(2026, 9, 4, 12, 0)
 
 // The row renders a list item, so it is always placed inside a list.
-function renderRow(task, now = NOW) {
+function renderRow(task, now = NOW, onOpen = vi.fn()) {
   return render(
     <ul>
-      <TaskRow task={task} now={now} />
+      <TaskRow task={task} now={now} onOpen={onOpen} />
     </ul>,
   )
 }
@@ -29,7 +30,7 @@ function urgencyIn(row) {
 describe('TaskRow', () => {
   it('shows the title of the task', () => {
     renderRow(createSampleTask({ title: 'Esai Fisika' }))
-    expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('Esai Fisika')
+    expect(screen.getByRole('button', { name: 'Esai Fisika' })).toBeInTheDocument()
   })
 
   it('shows the course of the task', () => {
@@ -93,10 +94,18 @@ describe('TaskRow', () => {
     expect(urgencyIn(renderedRow())).toHaveTextContent('Terlambat')
   })
 
-  it('renders no interactive control, so the row is not clickable yet', () => {
-    renderRow(createSampleTask())
-    expect(screen.queryByRole('button')).toBeNull()
+  it('opens the task from the single control of the row', async () => {
+    const user = userEvent.setup()
+    const onOpen = vi.fn()
+    renderRow(createSampleTask(), NOW, onOpen)
+
+    const control = screen.getByRole('button', { name: 'Esai Fisika' })
+    await user.click(control)
+
+    expect(screen.getAllByRole('button')).toHaveLength(1)
     expect(screen.queryByRole('link')).toBeNull()
+    expect(onOpen).toHaveBeenCalledTimes(1)
+    expect(onOpen).toHaveBeenCalledWith(expect.objectContaining({ id: 'task-1' }))
   })
 
   it('does not mutate the task and adds no urgency field to it', () => {

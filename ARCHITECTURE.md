@@ -35,6 +35,8 @@ src/
     TaskForm.jsx        Create and edit form with inline validation
     UrgencyBadge.jsx    Text label plus muted marker
     DeleteDialog.jsx    Confirmation naming the task
+    Icon.jsx            Wrapper around lucide-react, the only importer of it
+    icons.js            Explicit list of allowed icon components
   hooks/
     useTasks.js         Load, create, update, delete, search, filter, sort
     useDebouncedValue.js
@@ -196,7 +198,7 @@ Priority cases: urgency boundaries, empty list, past deadlines, invalid dates, c
 
 Settled choices for this project. Where a decision contradicts an earlier section, this section wins.
 
-1. **Test tooling** is installed in milestone M1b, right after M1, not at the end. Approved dev dependencies: `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/user-event`, `@testing-library/jest-dom`. No runtime dependency is ever added.
+1. **Test tooling** is installed in milestone M1b, right after M1, not at the end. Approved dev dependencies: `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/user-event`, `@testing-library/jest-dom`. No runtime dependency is added except `lucide-react` (see decision 9).
 2. **Deadlines** are stored exactly as the `datetime-local` value, for example `2026-10-04T23:59`, a local ISO string. Never convert with `toISOString()`, which shifts the wall-clock time and breaks "due today". The reference time `now` must be injectable in the date and urgency functions.
 3. **CSS location**: each component has one colocated plain CSS file, for example `src/components/TaskList.css`. Shared styles live only in `src/styles/tokens.css` and `src/styles/base.css`.
 4. **Navigation** uses React view state only. No router and no History API.
@@ -204,3 +206,5 @@ Settled choices for this project. Where a decision contradicts an earlier sectio
 6. **The summary strip** counts all stored tasks, not the filtered view.
 7. **Shell files**: `index.html` uses `lang="id"` and the title "DeadlineRadar". `README.md` is rewritten and `public/favicon.svg` is replaced with a plain one-colour mark in the final milestone.
 8. **Structure**: the `models/` folder, `src/models/task.js`, is part of the structure.
+9. **Icon library**: `lucide-react` is approved as the icon library. It may only be reached through `src/components/Icon.jsx`, a small wrapper component, and `src/components/icons.js`, the explicit list of allowed icons. No other icon library is approved, and `lucide-react` must not be imported anywhere else.
+10. **Design rules rewritten**: DESIGN.md was rewritten. Cards, colour, and light icons are allowed, and its forbidden list defines what must not be done.

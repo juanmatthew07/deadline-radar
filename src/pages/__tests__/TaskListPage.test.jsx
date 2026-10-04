@@ -56,10 +56,11 @@ function blockStorage() {
   })
 }
 
-// The urgency badge is a plain span without an ARIA role, so its data attribute
-// is the only handle for that label alone.
+// The urgency badge is a plain span without an ARIA role, and the card carries
+// the same data attribute for its urgency strip, so the class is the handle for
+// the label alone.
 function urgencyIn(row) {
-  return row.querySelector('[data-urgency]')
+  return row.querySelector('.urgency-badge')
 }
 
 beforeEach(() => {
@@ -109,7 +110,7 @@ describe('TaskListPage with stored tasks', () => {
     seed(DUE_TODAY)
     render(<TaskListPage />)
     const [row] = await screen.findAllByRole('listitem')
-    expect(within(row).getByRole('heading', { level: 3 })).toHaveTextContent('Laporan Kimia')
+    expect(within(row).getByRole('button', { name: 'Laporan Kimia' })).toBeInTheDocument()
     expect(within(row).getByText('Kimia')).toBeInTheDocument()
     expect(within(row).getByText('Belum')).toBeInTheDocument()
   })

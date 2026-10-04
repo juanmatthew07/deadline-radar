@@ -4,6 +4,7 @@
 export const DEADLINE_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/
 
 const NO_DEADLINE_LABEL = 'Tanpa tenggat'
+const NO_TIMESTAMP_LABEL = '-'
 
 const deadlineFormatter = new Intl.DateTimeFormat('id-ID', {
   weekday: 'short',
@@ -13,6 +14,13 @@ const deadlineFormatter = new Intl.DateTimeFormat('id-ID', {
   hour: '2-digit',
   minute: '2-digit',
   hourCycle: 'h23',
+})
+
+// createdAt and updatedAt are real instants, so unlike a deadline they are
+// shown in the local zone of the student, with the seconds dropped.
+const timestampFormatter = new Intl.DateTimeFormat('id-ID', {
+  dateStyle: 'medium',
+  timeStyle: 'short',
 })
 
 function buildLocalDate(year, month, day, hour, minute, second) {
@@ -71,4 +79,14 @@ export function formatDeadline(value) {
 
 export function toDeadlineInputValue(value) {
   return parseDeadline(value) ? value : ''
+}
+
+// A stored instant, shown in Indonesian local time. Anything that is not a
+// parseable string shows as a dash, so a repaired entry never prints an
+// invalid date.
+export function formatTimestamp(value) {
+  if (typeof value !== 'string') return NO_TIMESTAMP_LABEL
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return NO_TIMESTAMP_LABEL
+  return timestampFormatter.format(date)
 }

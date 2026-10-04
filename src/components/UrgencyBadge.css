@@ -1,35 +1,37 @@
-/* Text label plus a small muted marker. Never a coloured fill on its own. */
+/* A pill tinted by urgency. The label is always visible, so colour is never the
+   only signal. */
 
 .urgency-badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
   font-size: var(--text-sm);
-  color: var(--color-text-muted);
+  font-weight: var(--weight-medium);
   white-space: nowrap;
 }
 
-/* The marker is a thin bar, not an icon in a circle. */
-.urgency-badge::before {
-  content: '';
-  width: var(--space-1);
-  height: var(--space-3);
-  border-radius: var(--radius-sm);
-  background-color: var(--color-border);
-}
-
 .urgency-badge[data-urgency='overdue'] {
-  color: var(--color-urgency-overdue);
-}
-
-.urgency-badge[data-urgency='overdue']::before {
-  background-color: var(--color-urgency-overdue);
+  color: var(--urgency-overdue-fg);
+  background-color: var(--urgency-overdue-bg);
 }
 
 .urgency-badge[data-urgency='due_today'] {
-  color: var(--color-urgency-today);
+  color: var(--urgency-today-fg);
+  background-color: var(--urgency-today-bg);
 }
 
-.urgency-badge[data-urgency='due_today']::before {
-  background-color: var(--color-urgency-today);
+.urgency-badge[data-urgency='this_week'] {
+  color: var(--urgency-week-fg);
+  background-color: var(--urgency-week-bg);
+}
+
+.urgency-badge[data-urgency='later'] {
+  color: var(--urgency-later-fg);
+  background-color: var(--urgency-later-bg);
+}
+
+.urgency-badge[data-urgency='done'] {
+  color: var(--urgency-done-fg);
+  background-color: var(--urgency-done-bg);
 }

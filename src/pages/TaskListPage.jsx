@@ -1,3 +1,5 @@
+import Icon from '../components/Icon.jsx'
+import { Check } from '../components/icons.js'
 import TaskList from '../components/TaskList.jsx'
 import { useTasks } from '../hooks/useTasks.js'
 import './TaskListPage.css'
@@ -6,14 +8,16 @@ import './TaskListPage.css'
 const noop = () => {}
 
 // The main screen. It owns no data logic: the hook holds the async state and
-// the list component only renders it. The app name heading lives in TopBar.
-export function TaskListPage({ onAddTask, notice }) {
+// the list component only renders it. App owns the page container and the main
+// landmark, and the app name heading lives in TopBar.
+export function TaskListPage({ onAddTask, onOpenTask, notice }) {
   const { tasks, status, error, isRefreshing, refresh } = useTasks()
 
   return (
-    <main className="task-list-page">
+    <div className="task-list-page">
       {notice ? (
         <p className="task-list-page__notice" role="status">
+          <Icon as={Check} size={16} />
           {notice}
         </p>
       ) : null}
@@ -23,9 +27,10 @@ export function TaskListPage({ onAddTask, notice }) {
         error={error}
         isRefreshing={isRefreshing}
         onAddTask={onAddTask ?? noop}
+        onOpenTask={onOpenTask}
         onRefresh={refresh}
       />
-    </main>
+    </div>
   )
 }
 

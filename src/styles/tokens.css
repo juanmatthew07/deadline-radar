@@ -1,17 +1,46 @@
 /* DeadlineRadar design tokens. Every value in the app comes from here. */
 
-/* Colors: neutral surfaces, one accent, muted urgency markers. All pairs meet WCAG AA. */
+/* Colors: cool neutral surfaces, one teal accent, danger red. All pairs meet WCAG AA. */
 :root {
-  --color-surface: #fafaf8;
-  --color-surface-raised: #ffffff;
-  --color-border: #d6d3cf;
-  --color-text: #1a1a18;
-  --color-text-muted: #57534e;
-  --color-accent: #0f766e;
-  --color-accent-contrast: #ffffff;
-  --color-danger: #b42318;
-  --color-urgency-overdue: #a33a2e;
-  --color-urgency-today: #92580a;
+  --color-surface: #F4F7F7;
+  --color-surface-raised: #FFFFFF;
+  --color-surface-muted: #EAF0F0;
+  --color-border: #D9E2E2;
+  --color-border-strong: #B8C6C6;
+  --color-border-control: #7C8F8E;
+  --color-text: #14201F;
+  --color-text-muted: #4B5B5A;
+  --color-accent: #0F766E;
+  --color-accent-hover: #115E59;
+  --color-accent-contrast: #FFFFFF;
+  --color-accent-soft: #E6F6F4;
+  --color-accent-border: #9BD5CD;
+  --color-danger: #B42318;
+  --color-danger-hover: #912018;
+  --color-danger-soft: #FDECEA;
+  --color-urgency-overdue: #B42318;
+  --color-urgency-today: #92400E;
+  /* The only translucent colour of the app, for the overlay behind a dialog. */
+  --color-backdrop: rgba(26, 26, 24, 0.5);
+}
+
+/* Urgency tints: foreground for the label, background for the pill, strip for the card edge. */
+:root {
+  --urgency-overdue-fg: #B42318;
+  --urgency-overdue-bg: #FDECEA;
+  --urgency-overdue-strip: #D92D20;
+  --urgency-today-fg: #92400E;
+  --urgency-today-bg: #FEF3C7;
+  --urgency-today-strip: #D97706;
+  --urgency-week-fg: #115E59;
+  --urgency-week-bg: #D5F3EF;
+  --urgency-week-strip: #0D9488;
+  --urgency-later-fg: #4B5B5A;
+  --urgency-later-bg: #E8EEEE;
+  --urgency-later-strip: #7C8F8E;
+  --urgency-done-fg: #166534;
+  --urgency-done-bg: #DDF3E4;
+  --urgency-done-strip: #16A34A;
 }
 
 /* Spacing: 4px base scale. */
@@ -42,11 +71,18 @@
   --leading-normal: 1.5;
 }
 
-/* Shape */
+/* Shape: small radius for controls, medium for cards, pill for badges. */
 :root {
-  --radius-sm: 4px;
-  --radius-md: 6px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
   --border-width: 1px;
+}
+
+/* Layout: the centred container of every screen. */
+:root {
+  --container-max: 60rem;
 }
 
 /* Motion: short transitions only. */
@@ -54,9 +90,13 @@
   --duration-fast: 120ms;
 }
 
-/* The single allowed shadow, reserved for overlay surfaces such as the delete dialog. */
+/* Elevation: three neutral shadows, cards, interactive hover, and overlays. */
 :root {
-  --shadow-overlay: 0 8px 24px rgba(26, 26, 24, 0.12);
+  --shadow-card: 0 1px 2px rgb(20 32 31 / 0.05);
+  --shadow-card-hover:
+    0 2px 4px rgb(20 32 31 / 0.06), 0 6px 16px rgb(20 32 31 / 0.08);
+  --shadow-overlay:
+    0 12px 40px rgb(20 32 31 / 0.2), 0 2px 6px rgb(20 32 31 / 0.1);
 }
 
 /* Neutralise transitions for users who prefer reduced motion. */

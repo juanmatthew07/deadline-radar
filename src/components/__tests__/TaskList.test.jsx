@@ -110,15 +110,13 @@ describe('TaskList with rows', () => {
 
   it('keeps the order the tasks were given in', () => {
     renderList({ tasks: [THIRD, FIRST, SECOND] })
-    const titles = screen
-      .getAllByRole('heading', { level: 3 })
-      .map((heading) => heading.textContent)
+    const titles = screen.getAllByRole('button').map((control) => control.textContent)
     expect(titles).toEqual(['UTS Fisika', 'Esai Fisika', 'Laporan Kimia'])
   })
 
   it('shows no add action once there are rows', () => {
     renderList({ tasks: [FIRST] })
-    expect(screen.queryByRole('button')).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Tambah tugas' })).toBeNull()
   })
 
   it('keeps the rows on screen when a refresh failed', () => {

@@ -184,7 +184,7 @@ describe('App adding a task', () => {
     expect(await screen.findByText('Esai Fisika')).toBeInTheDocument()
   })
 
-  it('renders the saved task as a row heading in the list', async () => {
+  it('renders the saved task as a row that opens in the list', async () => {
     const user = userEvent.setup()
     render(<App />)
     await openForm(user)
@@ -193,7 +193,7 @@ describe('App adding a task', () => {
     await user.click(screen.getByRole('button', { name: 'Simpan' }))
 
     await waitFor(() =>
-      expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('Esai Fisika'),
+      expect(screen.getByRole('button', { name: 'Esai Fisika' })).toBeInTheDocument(),
     )
   })
 

@@ -1,0 +1,78 @@
+/* One task in full: the title, every field as a label and a value, then the
+   three actions. Narrow screens stack the label above the value; wider ones
+   align both into two columns. No shadow and no card, only 1px rules. */
+
+.task-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.task-detail__title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  text-align: left;
+  overflow-wrap: break-word;
+}
+
+.task-detail__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  border-top: var(--border-width) solid var(--color-border);
+  padding-top: var(--space-3);
+}
+
+.task-detail__pair {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.task-detail__term {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.task-detail__value {
+  margin: 0;
+  font-size: var(--text-sm);
+  /* A long word wraps instead of widening the screen on a narrow phone. */
+  overflow-wrap: break-word;
+}
+
+/* Dates line up in their column, so the numbers keep their width. */
+.task-detail__date {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The line breaks the student typed are part of the text, so they stay. */
+.task-detail__description {
+  white-space: pre-wrap;
+}
+
+.task-detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+/* Wide screens: the labels become one column and the values the other. The
+   wrappers stop being boxes, so the terms and the values are the grid items. */
+@media (min-width: 48rem) {
+  .task-detail__list {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: var(--space-4);
+    row-gap: var(--space-3);
+  }
+
+  .task-detail__pair {
+    display: contents;
+  }
+}

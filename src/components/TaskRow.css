@@ -1,70 +1,133 @@
-/* One task: title and course on the left, deadline, urgency, and status after.
-   Rows are separated by a 1px border, never by a card or a shadow. */
+/* The card is the row: a left urgency strip, the title line, then the metadata
+   line. The title control stretches over the card through its overlay, so the
+   whole card is the click and focus target. */
 
-.task-row {
+.card.task-row {
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-3) 0;
-  border-bottom: var(--border-width) solid var(--color-border);
+  gap: var(--space-2);
+  padding: var(--space-4);
+  min-height: 44px;
+  transition:
+    border-color var(--duration-fast) ease,
+    box-shadow var(--duration-fast) ease;
 }
 
-.task-row__main {
+/* The urgency strip on the leading edge, one spacing step wide. */
+.task-row::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: var(--space-1);
+  background-color: var(--urgency-later-strip);
+}
+
+.task-row[data-urgency='overdue']::before {
+  background-color: var(--urgency-overdue-strip);
+}
+
+.task-row[data-urgency='due_today']::before {
+  background-color: var(--urgency-today-strip);
+}
+
+.task-row[data-urgency='this_week']::before {
+  background-color: var(--urgency-week-strip);
+}
+
+.task-row[data-urgency='later']::before {
+  background-color: var(--urgency-later-strip);
+}
+
+.task-row[data-urgency='done']::before {
+  background-color: var(--urgency-done-strip);
+}
+
+.task-row:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.task-row__line {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+}
+
+/* The title reads as text, not as a filled button. */
+.task-row__open {
+  display: block;
   min-width: 0;
-}
-
-.task-row__title {
+  min-height: auto;
   margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
   font-size: var(--text-base);
-  font-weight: var(--weight-medium);
-  /* A long single word wraps instead of widening the row on a narrow screen. */
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  text-align: left;
+  /* A long single word wraps instead of widening the card. */
   overflow-wrap: break-word;
 }
 
-.task-row__course {
-  margin: 0;
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-  overflow-wrap: break-word;
+/* The overlay makes the whole card clickable. */
+.task-row__open::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+/* The card carries the ring, so the outline is not drawn twice and the title
+   outline cannot be clipped by the card edges. */
+.task-row:focus-within {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.task-row__open:focus-visible {
+  outline: none;
 }
 
 .task-row__meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2) var(--space-4);
-}
-
-.task-row__deadline {
-  margin: 0;
-  font-size: var(--text-sm);
-  color: var(--color-text);
-  font-variant-numeric: tabular-nums;
-}
-
-.task-row__status {
-  margin: 0;
+  gap: var(--space-2) var(--space-3);
   font-size: var(--text-sm);
   color: var(--color-text-muted);
 }
 
-/* Wide screens line the five fields up as columns. The two wrappers only exist
-   for the single column layout, so they stop being boxes here and their
-   children become the grid items of the row. */
-@media (min-width: 48rem) {
-  .task-row {
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto auto auto;
-    align-items: center;
-    column-gap: var(--space-4);
-    padding: var(--space-3) 0;
-  }
+.task-row__fact {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  overflow-wrap: break-word;
+}
 
-  .task-row__main,
-  .task-row__meta {
-    display: contents;
-  }
+.task-row__deadline {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The status label is a small outlined pill. */
+.task-row__status {
+  display: inline-flex;
+  align-items: center;
+  padding-inline: var(--space-2);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+/* A finished task steps back, and the line through the title says it is done. */
+.task-row[data-urgency='done'] .task-row__open {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
 }
