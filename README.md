@@ -1,16 +1,30 @@
-# React + Vite
+# DeadlineRadar
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+DeadlineRadar adalah aplikasi pelacak tugas dan tenggat waktu perkuliahan yang dirancang dengan prinsip minimalis, fungsional, dan berpusat pada data. Aplikasi ini beroperasi 100% secara luring untuk memastikan privasi pengguna melalui penyimpanan lokal (local storage), tanpa memerlukan koneksi ke server, basis data eksternal, atau pembuatan akun.
 
-Currently, two official plugins are available:
+## Fitur Utama
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Manajemen Tugas Sederhana:** Tambah, perbarui, dan tandai tugas selesai dengan cepat. Tenggat waktu diproses secara presisi menggunakan format waktu lokal.
+- **Penyimpanan Lokal:** Seluruh data disimpan dengan aman di peramban pengguna menggunakan `localStorage` dengan kunci `deadlineradar:tasks:v1`.
+- **Dasbor Analitik:** Menampilkan metrik urgensi tugas, grafik beban kerja mingguan, dan persentase progres penyelesaian per mata kuliah.
+- **Pencarian dan Filter Cerdas:** Filter tugas berdasarkan status, mata kuliah, serta pengurutan berdasarkan tenggat waktu terdekat.
+- **Pencadangan Data (Impor/Ekspor):** Memungkinkan pengguna untuk mengamankan data dengan mengekspor seluruh tugas ke format JSON dan mengimpornya kembali ke perangkat lain.
+- **Desain Murni Fungsional:** Antarmuka berbahasa Indonesia yang bersih, tanpa ornamen berlebih (tanpa gradien/bayangan berlebih), menggunakan aksen warna tunggal (Teal - `#0F766E`).
 
-## React Compiler
+## Tumpukan Teknologi
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Proyek ini dibangun tanpa *router* atau sistem *backend*, berfokus pada kecepatan dan kesederhanaan eksekusi sisi klien (client-side).
 
-## Expanding the ESLint configuration
+- **Framework:** React 19 + Vite JS (JavaScript murni)
+- **Styling:** Tailwind CSS
+- **Ikon:** Lucide React (satu-satunya dependensi eksternal untuk UI)
+- **Pengujian:** Vitest + React Testing Library
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Panduan Instalasi Lokal
+
+Pastikan Anda telah menginstal Node.js di sistem Anda.
+
+1. Klon repositori ini ke mesin lokal Anda.
+2. Buka terminal di direktori proyek dan instal dependensi:
+   ```bash
+   npm install
